@@ -1,0 +1,818 @@
+{
+  "updatedAt": "2025-12-02T08:25:51.000Z",
+  "createdAt": "2025-11-10T06:20:28.110Z",
+  "id": "sZwcpM8hQLRvRPZz",
+  "name": "smmcn",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 50
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "85b490f9-90e0-4d80-8904-d7727b42422b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.urls }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        64
+      ],
+      "id": "7ae260d2-b0bd-411b-8f42-80c64b40cabf",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95768ffe-cfb5-43c7-950a-ac47fa9e2c6f",
+              "name": "product_id",
+              "value": "={{ $json.data.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "36afdbac-b220-4212-a596-542623f06319",
+              "name": "highs",
+              "value": "={{ $json.data.highs }}",
+              "type": "string"
+            },
+            {
+              "id": "4bd59a6a-fde0-472b-af40-8fd0977c065f",
+              "name": "low",
+              "value": "={{ $json.data.low }}",
+              "type": "string"
+            },
+            {
+              "id": "78d77850-6270-49d4-98bc-6b18209bd901",
+              "name": "average",
+              "value": "={{ $json.data.average }}",
+              "type": "string"
+            },
+            {
+              "id": "bef64581-42a9-4afc-bb9f-7ba2cc166ee1",
+              "name": "vchange",
+              "value": "={{ $json.data.vchange }}",
+              "type": "string"
+            },
+            {
+              "id": "21c65c66-0c4f-43b2-8671-fba7138afe78",
+              "name": "vchange_rate",
+              "value": "={{ $json.data.vchange_rate }}",
+              "type": "string"
+            },
+            {
+              "id": "5d1028bd-5d83-4c40-8bb9-49b28380fef4",
+              "name": "renew_date",
+              "value": "={{ $json.data.renew_date }}",
+              "type": "string"
+            },
+            {
+              "id": "b1f5d214-4c4f-4377-94f8-a8552efa644c",
+              "name": "low_show",
+              "value": "={{ $json.data.low_show }}",
+              "type": "string"
+            },
+            {
+              "id": "7cebb41a-dea8-4836-8040-223fbceaa481",
+              "name": "high_show",
+              "value": "={{ $json.data.high_show }}",
+              "type": "string"
+            },
+            {
+              "id": "9127493b-4806-400a-8e63-139d0eee2146",
+              "name": "average_show",
+              "value": "={{ $json.data.average_show }}",
+              "type": "string"
+            },
+            {
+              "id": "bf737e90-f61a-41f8-ad2d-472c8ea5005b",
+              "name": "change_value_show",
+              "value": "={{ $json.data.change_value_show }}",
+              "type": "string"
+            },
+            {
+              "id": "2a3ed555-1868-47ae-8b3e-7c259698dd35",
+              "name": "change_rate_show",
+              "value": "={{ $json.data.change_rate_show }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        -128
+      ],
+      "id": "4f52372c-dbeb-4018-a12f-dd31817236b0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "smmcn",
+          "mode": "list",
+          "cachedResultName": "smmcn"
+        },
+        "columnToMatchOn": "renew_date",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1376,
+        -128
+      ],
+      "id": "67fac095-30cd-4cfc-a623-3f0ecebccffe",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "t9uO56ilinkwpsKR",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ee50603d-1cb5-493b-af13-810618bb13cc",
+      "name": "currentDate"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.currentDate }}",
+        "format": "custom",
+        "customFormat": "yyyy-MM-dd",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "45083395-1a37-48a9-b262-b135137ebd0e",
+      "name": "formattedDate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7a55300-dcab-45c1-8283-da0b4e9548a8",
+              "name": "urls",
+              "value": "=[\"https://hq.smm.cn/ajax/spot/history/201102250376/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201912300001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201211190003/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201704240001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260003/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250311/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250319/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250397/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250010/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250211/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/2011022500001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250173/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202010210003/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201504080006/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250158/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250239/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208290001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250140/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250375/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250381/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250059/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201309290001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208300001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250360/{{ $json.formattedDate }}/{{ $json.formattedDate }}\"\n] ",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        0
+      ],
+      "id": "864ffab0-352f-47e0-b23f-6f53fb79f325",
+      "name": "setarray"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "7482d601-9d6e-4d74-b683-7f6807ce116f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "urls",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "daddabe3-0f24-443c-8336-97f6cdc01423",
+      "name": "SplitUrls"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9f6912cb-20b9-407a-a432-b4c75fa70c3f",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        64
+      ],
+      "id": "2158b953-e1ed-4f74-8340-58aca3fad859",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        64
+      ],
+      "id": "e30d8ab3-0d3a-4f4c-a0db-326a0a887e7e",
+      "name": "Code"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "currentDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "currentDate": {
+      "main": [
+        [
+          {
+            "node": "formattedDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formattedDate": {
+      "main": [
+        [
+          {
+            "node": "setarray",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setarray": {
+      "main": [
+        [
+          {
+            "node": "SplitUrls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitUrls": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "232184c4-b6e4-4663-b4c5-0497911c44b2",
+  "activeVersionId": "232184c4-b6e4-4663-b4c5-0497911c44b2",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-10T06:20:28.114Z",
+      "createdAt": "2025-11-10T06:20:28.114Z",
+      "role": "workflow:owner",
+      "workflowId": "sZwcpM8hQLRvRPZz",
+      "projectId": "2KZknanlM1yBuuvy"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-02T08:25:51.431Z",
+    "createdAt": "2025-12-02T08:25:51.431Z",
+    "versionId": "232184c4-b6e4-4663-b4c5-0497911c44b2",
+    "workflowId": "sZwcpM8hQLRvRPZz",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9,
+                "triggerAtMinute": 50
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          0
+        ],
+        "id": "85b490f9-90e0-4d80-8904-d7727b42422b",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.urls }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1200,
+          64
+        ],
+        "id": "7ae260d2-b0bd-411b-8f42-80c64b40cabf",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "95768ffe-cfb5-43c7-950a-ac47fa9e2c6f",
+                "name": "product_id",
+                "value": "={{ $json.data.product_id }}",
+                "type": "string"
+              },
+              {
+                "id": "36afdbac-b220-4212-a596-542623f06319",
+                "name": "highs",
+                "value": "={{ $json.data.highs }}",
+                "type": "string"
+              },
+              {
+                "id": "4bd59a6a-fde0-472b-af40-8fd0977c065f",
+                "name": "low",
+                "value": "={{ $json.data.low }}",
+                "type": "string"
+              },
+              {
+                "id": "78d77850-6270-49d4-98bc-6b18209bd901",
+                "name": "average",
+                "value": "={{ $json.data.average }}",
+                "type": "string"
+              },
+              {
+                "id": "bef64581-42a9-4afc-bb9f-7ba2cc166ee1",
+                "name": "vchange",
+                "value": "={{ $json.data.vchange }}",
+                "type": "string"
+              },
+              {
+                "id": "21c65c66-0c4f-43b2-8671-fba7138afe78",
+                "name": "vchange_rate",
+                "value": "={{ $json.data.vchange_rate }}",
+                "type": "string"
+              },
+              {
+                "id": "5d1028bd-5d83-4c40-8bb9-49b28380fef4",
+                "name": "renew_date",
+                "value": "={{ $json.data.renew_date }}",
+                "type": "string"
+              },
+              {
+                "id": "b1f5d214-4c4f-4377-94f8-a8552efa644c",
+                "name": "low_show",
+                "value": "={{ $json.data.low_show }}",
+                "type": "string"
+              },
+              {
+                "id": "7cebb41a-dea8-4836-8040-223fbceaa481",
+                "name": "high_show",
+                "value": "={{ $json.data.high_show }}",
+                "type": "string"
+              },
+              {
+                "id": "9127493b-4806-400a-8e63-139d0eee2146",
+                "name": "average_show",
+                "value": "={{ $json.data.average_show }}",
+                "type": "string"
+              },
+              {
+                "id": "bf737e90-f61a-41f8-ad2d-472c8ea5005b",
+                "name": "change_value_show",
+                "value": "={{ $json.data.change_value_show }}",
+                "type": "string"
+              },
+              {
+                "id": "2a3ed555-1868-47ae-8b3e-7c259698dd35",
+                "name": "change_rate_show",
+                "value": "={{ $json.data.change_rate_show }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1216,
+          -128
+        ],
+        "id": "4f52372c-dbeb-4018-a12f-dd31817236b0",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "table": {
+            "__rl": true,
+            "value": "smmcn",
+            "mode": "list",
+            "cachedResultName": "smmcn"
+          },
+          "columnToMatchOn": "renew_date",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1376,
+          -128
+        ],
+        "id": "67fac095-30cd-4cfc-a623-3f0ecebccffe",
+        "name": "Insert or update rows in a table",
+        "credentials": {
+          "mySql": {
+            "id": "t9uO56ilinkwpsKR",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          208,
+          0
+        ],
+        "id": "ee50603d-1cb5-493b-af13-810618bb13cc",
+        "name": "currentDate"
+      },
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json.currentDate }}",
+          "format": "custom",
+          "customFormat": "yyyy-MM-dd",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          416,
+          0
+        ],
+        "id": "45083395-1a37-48a9-b262-b135137ebd0e",
+        "name": "formattedDate"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a7a55300-dcab-45c1-8283-da0b4e9548a8",
+                "name": "urls",
+                "value": "=[\"https://hq.smm.cn/ajax/spot/history/201102250376/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201912300001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201211190003/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201704240001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260003/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250311/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250319/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250397/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250010/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250211/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/2011022500001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250173/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202010210003/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201504080006/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250158/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250239/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208290001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250140/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250375/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250381/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250059/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201309290001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208300001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250360/{{ $json.formattedDate }}/{{ $json.formattedDate }}\"\n] ",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          624,
+          0
+        ],
+        "id": "864ffab0-352f-47e0-b23f-6f53fb79f325",
+        "name": "setarray"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1024,
+          0
+        ],
+        "id": "7482d601-9d6e-4d74-b683-7f6807ce116f",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "urls",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          832,
+          0
+        ],
+        "id": "daddabe3-0f24-443c-8336-97f6cdc01423",
+        "name": "SplitUrls"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9f6912cb-20b9-407a-a432-b4c75fa70c3f",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1360,
+          64
+        ],
+        "id": "2158b953-e1ed-4f74-8340-58aca3fad859",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1536,
+          64
+        ],
+        "id": "e30d8ab3-0d3a-4f4c-a0db-326a0a887e7e",
+        "name": "Code"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "currentDate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Insert or update rows in a table",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "currentDate": {
+        "main": [
+          [
+            {
+              "node": "formattedDate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "formattedDate": {
+        "main": [
+          [
+            {
+              "node": "setarray",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setarray": {
+        "main": [
+          [
+            {
+              "node": "SplitUrls",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SplitUrls": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "fan rich",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
