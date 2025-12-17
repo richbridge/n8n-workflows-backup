@@ -1,0 +1,778 @@
+{
+  "updatedAt": "2025-12-02T08:19:39.000Z",
+  "createdAt": "2025-11-06T08:56:22.434Z",
+  "id": "ry5589ZOtBSmOsCA",
+  "name": "cjsmmcn",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a691f7d8-4ed1-49ff-bfa9-dfed0119642e",
+      "name": "获取当前时间"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9,
+              "triggerAtMinute": 50
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6ed56cde-501e-4597-9b84-241608d9265d",
+      "name": "触发器"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.urls }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1328,
+        -16
+      ],
+      "id": "90df7128-ea5c-4efd-9be0-f1c1973b73e2",
+      "name": "获取数据"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd68c0bf-6802-462e-a861-0963ce5f14cc",
+              "name": "product_id",
+              "value": "={{ $json.data.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "620e8ce2-9b43-4812-b9bf-3f4330c5c1a2",
+              "name": "highs",
+              "value": "={{ $json.data.highs }}",
+              "type": "number"
+            },
+            {
+              "id": "d5e03c25-902a-40e5-ab98-c108515dbbe8",
+              "name": "low",
+              "value": "={{ $json.data.low }}",
+              "type": "number"
+            },
+            {
+              "id": "92784ca1-1c50-4add-a089-15d9d2154818",
+              "name": "average",
+              "value": "={{ $json.data.average }}",
+              "type": "number"
+            },
+            {
+              "id": "366012fb-edea-492c-9bbf-22c1e85ea70d",
+              "name": "vchange",
+              "value": "={{ $json.data.vchange }}",
+              "type": "number"
+            },
+            {
+              "id": "dfef8d21-83e8-480e-a55a-90c4db307e62",
+              "name": "renew_date",
+              "value": "={{ $json.data.renew_date }}",
+              "type": "string"
+            },
+            {
+              "id": "b8bfa5d3-4230-4f09-887e-ede541fb1451",
+              "name": "vchange_rate",
+              "value": "={{ $json.data.vchange_rate }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        -224
+      ],
+      "id": "5f9e7a9a-d157-4a15-a854-2ce0a300c63d",
+      "name": "格式化数据匹配数据库"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.currentDate }}",
+        "format": "custom",
+        "customFormat": "yyyy-MM-dd",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        608,
+        0
+      ],
+      "id": "1e07ea36-e324-4616-b057-0afed9f868ba",
+      "name": "formattedDate"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "cjsmmcn",
+          "mode": "list",
+          "cachedResultName": "cjsmmcn"
+        },
+        "columnToMatchOn": "product_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        1648,
+        -224
+      ],
+      "id": "a3fa071b-e4c3-4d2f-b9ad-ed994f49cbbc",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "t9uO56ilinkwpsKR",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": "=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -32
+      ],
+      "id": "b47cc181-19fa-4865-866b-ae167db86740",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e82dd11-219d-417a-a100-e5fdcdb49382",
+              "name": "urls",
+              "value": "=[\"https://cj.smm.cn/ajax/spot/history/201102250293/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250398/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250290/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250428/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250307/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250115/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250008/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/202201040001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250459/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250109/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250166/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250130/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250502/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250574/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250385/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250391/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250404/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250146/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250386/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250215/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250455/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250605/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250043/{{ $json.formattedDate }}/{{ $json.formattedDate }}\"] ",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        0
+      ],
+      "id": "a5b93f6c-529c-4bce-96e6-cf2c11fdcbd5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "urls",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        896,
+        0
+      ],
+      "id": "be2d44b5-b174-4995-8ce3-e16c5cbbd9fc",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f4e699f5-57c5-4d03-9c39-83906cde9ba6",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1488,
+        -16
+      ],
+      "id": "110091e3-2c35-41dd-9cd2-77c1afd6b29d",
+      "name": "提取data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        -16
+      ],
+      "id": "34224f57-bb1d-4df7-b7bb-1010241b75cf",
+      "name": "筛选当日"
+    }
+  ],
+  "connections": {
+    "获取当前时间": {
+      "main": [
+        [
+          {
+            "node": "formattedDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "触发器": {
+      "main": [
+        [
+          {
+            "node": "获取当前时间",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取数据": {
+      "main": [
+        [
+          {
+            "node": "提取data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "格式化数据匹配数据库": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formattedDate": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "格式化数据匹配数据库",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "获取数据",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "提取data": {
+      "main": [
+        [
+          {
+            "node": "筛选当日",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "筛选当日": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Shanghai",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": {
+    "node:触发器": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "5f8b5be9-b3aa-452d-b27c-b6053d6837df",
+  "activeVersionId": "5f8b5be9-b3aa-452d-b27c-b6053d6837df",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-06T08:56:22.440Z",
+      "createdAt": "2025-11-06T08:56:22.440Z",
+      "role": "workflow:owner",
+      "workflowId": "ry5589ZOtBSmOsCA",
+      "projectId": "2KZknanlM1yBuuvy"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-02T08:19:39.014Z",
+    "createdAt": "2025-12-02T08:19:39.014Z",
+    "versionId": "5f8b5be9-b3aa-452d-b27c-b6053d6837df",
+    "workflowId": "ry5589ZOtBSmOsCA",
+    "nodes": [
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          416,
+          0
+        ],
+        "id": "a691f7d8-4ed1-49ff-bfa9-dfed0119642e",
+        "name": "获取当前时间"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9,
+                "triggerAtMinute": 50
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          208,
+          0
+        ],
+        "id": "6ed56cde-501e-4597-9b84-241608d9265d",
+        "name": "触发器"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.urls }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "user-agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1328,
+          -16
+        ],
+        "id": "90df7128-ea5c-4efd-9be0-f1c1973b73e2",
+        "name": "获取数据"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dd68c0bf-6802-462e-a861-0963ce5f14cc",
+                "name": "product_id",
+                "value": "={{ $json.data.product_id }}",
+                "type": "string"
+              },
+              {
+                "id": "620e8ce2-9b43-4812-b9bf-3f4330c5c1a2",
+                "name": "highs",
+                "value": "={{ $json.data.highs }}",
+                "type": "number"
+              },
+              {
+                "id": "d5e03c25-902a-40e5-ab98-c108515dbbe8",
+                "name": "low",
+                "value": "={{ $json.data.low }}",
+                "type": "number"
+              },
+              {
+                "id": "92784ca1-1c50-4add-a089-15d9d2154818",
+                "name": "average",
+                "value": "={{ $json.data.average }}",
+                "type": "number"
+              },
+              {
+                "id": "366012fb-edea-492c-9bbf-22c1e85ea70d",
+                "name": "vchange",
+                "value": "={{ $json.data.vchange }}",
+                "type": "number"
+              },
+              {
+                "id": "dfef8d21-83e8-480e-a55a-90c4db307e62",
+                "name": "renew_date",
+                "value": "={{ $json.data.renew_date }}",
+                "type": "string"
+              },
+              {
+                "id": "b8bfa5d3-4230-4f09-887e-ede541fb1451",
+                "name": "vchange_rate",
+                "value": "={{ $json.data.vchange_rate }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1440,
+          -224
+        ],
+        "id": "5f9e7a9a-d157-4a15-a854-2ce0a300c63d",
+        "name": "格式化数据匹配数据库"
+      },
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json.currentDate }}",
+          "format": "custom",
+          "customFormat": "yyyy-MM-dd",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          608,
+          0
+        ],
+        "id": "1e07ea36-e324-4616-b057-0afed9f868ba",
+        "name": "formattedDate"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "table": {
+            "__rl": true,
+            "value": "cjsmmcn",
+            "mode": "list",
+            "cachedResultName": "cjsmmcn"
+          },
+          "columnToMatchOn": "product_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1648,
+          -224
+        ],
+        "id": "a3fa071b-e4c3-4d2f-b9ad-ed994f49cbbc",
+        "name": "Insert or update rows in a table",
+        "credentials": {
+          "mySql": {
+            "id": "t9uO56ilinkwpsKR",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "batchSize": "=1",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          1120,
+          -32
+        ],
+        "id": "b47cc181-19fa-4865-866b-ae167db86740",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1e82dd11-219d-417a-a100-e5fdcdb49382",
+                "name": "urls",
+                "value": "=[\"https://cj.smm.cn/ajax/spot/history/201102250293/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250398/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250290/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250428/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250307/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250115/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250008/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/202201040001/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250459/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250109/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250166/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250130/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250502/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250574/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250385/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250391/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250404/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250146/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250386/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250215/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250455/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250605/{{ $json.formattedDate }}/{{ $json.formattedDate }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250043/{{ $json.formattedDate }}/{{ $json.formattedDate }}\"] ",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          752,
+          0
+        ],
+        "id": "a5b93f6c-529c-4bce-96e6-cf2c11fdcbd5",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "urls",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          896,
+          0
+        ],
+        "id": "be2d44b5-b174-4995-8ce3-e16c5cbbd9fc",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f4e699f5-57c5-4d03-9c39-83906cde9ba6",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1488,
+          -16
+        ],
+        "id": "110091e3-2c35-41dd-9cd2-77c1afd6b29d",
+        "name": "提取data"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1632,
+          -16
+        ],
+        "id": "34224f57-bb1d-4df7-b7bb-1010241b75cf",
+        "name": "筛选当日"
+      }
+    ],
+    "connections": {
+      "获取当前时间": {
+        "main": [
+          [
+            {
+              "node": "formattedDate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "触发器": {
+        "main": [
+          [
+            {
+              "node": "获取当前时间",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "获取数据": {
+        "main": [
+          [
+            {
+              "node": "提取data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "格式化数据匹配数据库": {
+        "main": [
+          [
+            {
+              "node": "Insert or update rows in a table",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "formattedDate": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "格式化数据匹配数据库",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "获取数据",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "提取data": {
+        "main": [
+          [
+            {
+              "node": "筛选当日",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "筛选当日": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "fan rich",
+    "name": null,
+    "description": null
+  },
+  "tags": []
+}
