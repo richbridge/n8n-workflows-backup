@@ -1,0 +1,164 @@
+{
+  "updatedAt": "2025-12-03T08:45:45.000Z",
+  "createdAt": "2025-11-16T02:21:36.275Z",
+  "id": "7xzGUJZZRZ1zMrJr",
+  "name": "http wechat",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        16
+      ],
+      "id": "8bf0d8ed-28f0-468a-bcfe-bad574b78b82",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -624,
+        16
+      ],
+      "id": "5cbcd8b7-5ecb-41e6-bd5e-660ac8951664",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=33265dba-7f8b-494d-aa38-0b96ca83e42a&type=file",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "filename",
+              "value": "File.xlsx"
+            },
+            {
+              "name": "name",
+              "value": "media"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "media",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        16
+      ],
+      "id": "38fddf87-8b14-41af-aa3c-f3984867eda0",
+      "name": "获取media_id"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=33265dba-7f8b-494d-aa38-0b96ca83e42a",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=\t\t\t{\n\t\t\t    \"msgtype\": \"file\",\n\t\t\t    \"text\": {\n\t\t\t        \"media_id\": \"{{ $json.media_id }}\"\n\t\t\t    }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -176,
+        16
+      ],
+      "id": "c5cf2e65-612f-4d4c-af00-b86ff445e689",
+      "name": "发送文件"
+    },
+    {
+      "parameters": {
+        "enterpriseWebhook": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=33265dba-7f8b-494d-aa38-0b96ca83e42a",
+        "enterpriseMessageType": "image",
+        "enterpriseImageUrl": "https://ts1.tc.mm.bing.net/th/id/R-C.987f582c510be58755c4933cda68d525?rik=C0D21hJDYvXosw&riu=http%3a%2f%2fimg.pconline.com.cn%2fimages%2fupload%2fupc%2ftx%2fwallpaper%2f1305%2f16%2fc4%2f20990657_1368686545122.jpg&ehk=netN2qzcCVS4ALUQfDOwxAwFcy41oxC%2b0xTFvOYy5ds%3d&risl=&pid=ImgRaw&r=0"
+      },
+      "type": "n8n-nodes-wechat-send.weixinWechatSend",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        240
+      ],
+      "id": "8e43dcd1-2a18-40f4-872f-fd69aa3fb5a0",
+      "name": "WeChat Send"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "获取media_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取media_id": {
+      "main": [
+        [
+          {
+            "node": "发送文件",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "发送文件": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "444e47b7-4d03-4c98-8de9-43098e673f6e",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-16T02:21:36.280Z",
+      "createdAt": "2025-11-16T02:21:36.280Z",
+      "role": "workflow:owner",
+      "workflowId": "7xzGUJZZRZ1zMrJr",
+      "projectId": "2KZknanlM1yBuuvy"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
