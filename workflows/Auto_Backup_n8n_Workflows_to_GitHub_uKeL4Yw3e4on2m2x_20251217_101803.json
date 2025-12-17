@@ -1,0 +1,291 @@
+{
+  "updatedAt": "2025-12-17T02:16:55.095Z",
+  "createdAt": "2025-12-17T02:06:48.645Z",
+  "id": "uKeL4Yw3e4on2m2x",
+  "name": "Auto Backup n8n Workflows to GitHub",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "eaae4b21-3dfd-4073-bb17-ffb1636d2389",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://richffan-n8n.hf.space/api/v1/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiMmM3MzY3YS1lNzBjLTQ0YjgtYTMxNi05MDk5ZTVjNTVkYTEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY1OTM3MjQ3fQ.tS8Z6qJnvd60wdvPRxnKcW50Umctu6RvNY80NlrQ5gU"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4cca2a2a-bf70-409a-9dc4-5d19d378fe71",
+      "name": "Get All Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// 遍历 API 返回的所有工作流数据\nfor (const item of items[0].json.data) {\n  results.push({\n    json: {\n      id: item.id,\n      name: item.name,\n      active: item.active,\n      nodes: item.nodes,\n      connections: item.connections,\n      settings: item.settings,\n      // 生成文件名：替换掉特殊字符，防止文件名非法\n      fileName: `workflows/${item.name.replace(/[^a-zA-Z0-9-_]/g, '_')}_${item.id}.json`,\n      // 将整个对象转为格式化的 JSON 字符串\n      fileContent: JSON.stringify(item, null, 2)\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "675b1e60-5365-4d1f-8c09-39872ea5aa31",
+      "name": "Format Data & Filename",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "niklaus2008",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "name"
+        },
+        "filePath": "={{ $json.fileName}}",
+        "additionalParameters": {}
+      },
+      "id": "1f3e5cd9-6f7a-40e4-8375-8d11b81f43a4",
+      "name": "get GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        0,
+        224
+      ],
+      "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+      "credentials": {
+        "githubApi": {
+          "id": "FJNzNatJV30FlQNH",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "73c238ed-22ed-4e61-924f-ef709e434f4f",
+              "leftValue": "=$json.sha",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        224
+      ],
+      "id": "4c508f3d-6b48-486f-8f23-0a32ab8dc4d7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "niklaus2008",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "name"
+        },
+        "filePath": "={{ $node[\"Format Data & Filename\"].json.fileName.replace('.json', '') }}_{{ $now.toFormat('yyyyMMdd_HHmmss') }}.json",
+        "fileContent": "={{ $node[\"Format Data & Filename\"].json.fileContent }}",
+        "commitMessage": "=Backup: {{ $json.name }} "
+      },
+      "id": "ad5fe867-e77e-4b39-a867-2ad656105ce6",
+      "name": "first commit to GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        672,
+        0
+      ],
+      "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+      "credentials": {
+        "githubApi": {
+          "id": "FJNzNatJV30FlQNH",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "niklaus2008",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "name"
+        },
+        "filePath": "={{ $node[\"Format Data & Filename\"].json.fileName }}",
+        "fileContent": "={{ $node[\"Format Data & Filename\"].json.fileContent }}",
+        "commitMessage": "=Backup: {{ $('get GitHub').item.json.content.name }}"
+      },
+      "id": "8fd6bd76-8ae0-4691-93ac-c4b6f781b9f5",
+      "name": "edit with GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        448,
+        224
+      ],
+      "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+      "credentials": {
+        "githubApi": {
+          "id": "FJNzNatJV30FlQNH",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "尝试先判断文件是否存在\n存在则更新\n不存在则新建文件到github上，\n但因为SHA 走不通",
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        224
+      ],
+      "id": "b14e0ace-b3aa-41d9-aab6-50d8796417e5",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get All Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Workflows": {
+      "main": [
+        [
+          {
+            "node": "Format Data & Filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data & Filename": {
+      "main": [
+        [
+          {
+            "node": "first commit to GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get GitHub": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "edit with GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "76de148a-6fc8-48a3-bb75-cf5669f97f54",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-12-17T02:06:48.650Z",
+      "createdAt": "2025-12-17T02:06:48.650Z",
+      "role": "workflow:owner",
+      "workflowId": "uKeL4Yw3e4on2m2x",
+      "projectId": "bbUs1mUg4oDCHues"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
