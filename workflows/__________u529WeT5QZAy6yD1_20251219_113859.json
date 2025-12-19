@@ -1,0 +1,595 @@
+{
+  "updatedAt": "2025-12-19T03:34:27.142Z",
+  "createdAt": "2025-12-10T02:46:46.890Z",
+  "id": "u529WeT5QZAy6yD1",
+  "name": "上海黄金交易所采集",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://www.sge.com.cn/portal/marketAutomation/downloadExcelForQuoteDailyNew?start_date={{ $json.formattedDate }}&end_date={{ $json.formattedDate }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        656
+      ],
+      "id": "d48f7c1f-e604-4ffe-9134-963e23578939",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        576,
+        656
+      ],
+      "id": "fb191070-44ee-46f3-9b9a-5dc951516384",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84fa7e63-83ef-41c8-9775-c05d071f9866",
+              "name": "日期",
+              "value": "={{ $json['日期'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7fe99cae-f3de-4f8d-9a61-60a2f6c5c6c3",
+              "name": "合约",
+              "value": "={{ $json['合约'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8ff06318-f419-4ea1-9406-ec7da8943ac6",
+              "name": "开盘价",
+              "value": "={{ $json['开盘价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "088adac1-0d29-4a25-acb3-d067d1e71b07",
+              "name": "最高价",
+              "value": "={{ $json['最高价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76671792-a1db-4d26-a591-9f9130c77a74",
+              "name": "最低价",
+              "value": "={{ $json['最低价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "bfb077e8-35c3-4444-aa12-78a79fac4e9b",
+              "name": "收盘价",
+              "value": "={{ $json['收盘价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1fa34643-be18-485b-a9f4-96cfb7a7e6d2",
+              "name": "涨跌（元）",
+              "value": "={{ $json['涨跌（元）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "2364f214-f7fa-4148-8883-0c63ff522c22",
+              "name": "涨跌幅",
+              "value": "={{ $json['涨跌幅'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fba103c2-7dcb-471f-ac8b-ee073d214f46",
+              "name": "加权平均价",
+              "value": "={{ $json['加权平均价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "06791a2f-c780-490f-b55e-99a55b0d1141",
+              "name": "成交量（kg）",
+              "value": "={{ $json['成交量（kg）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "de845f2d-7139-4b05-8e88-c4eaca8c0a58",
+              "name": "成交金额（元）",
+              "value": "={{ $json['成交金额（元）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5fc3b6c7-e144-4dca-bc76-53f3cd85af42",
+              "name": "市场持仓（手）",
+              "value": "={{ $json['市场持仓（手）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7a072347-1201-434a-bbc4-e78e7fcccacb",
+              "name": "交收方向",
+              "value": "={{ $json['交收方向'] }}",
+              "type": "string"
+            },
+            {
+              "id": "494bd6fa-a214-4973-8e05-2beebba34855",
+              "name": "交收量（手）",
+              "value": "={{ $json['交收量（手）'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        656
+      ],
+      "id": "9dcd06cd-2ee3-4492-af73-de052e860e0f",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18,
+              "triggerAtMinute": 50
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        656
+      ],
+      "id": "bf13a777-a180-443c-90ee-0d29f939d662",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        96,
+        656
+      ],
+      "id": "138f85e1-7b3b-4035-9c80-554e3d3f22e9",
+      "name": "currentDate"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json.currentDate }}",
+        "format": "custom",
+        "customFormat": "yyyy-MM-dd",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        240,
+        656
+      ],
+      "id": "f050cd98-5eb2-416a-854e-ba92d75150ad",
+      "name": "formattedDate"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "sge",
+          "mode": "list",
+          "cachedResultName": "sge"
+        },
+        "columnToMatchOn": "日期",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        976,
+        656
+      ],
+      "id": "c9d4974d-b364-46a4-ae14-a857b0dc2e32",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "mySql": {
+          "id": "S5MOE6pmmBbZ6IJi",
+          "name": "MySQL account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "currentDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "currentDate": {
+      "main": [
+        [
+          {
+            "node": "formattedDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "formattedDate": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "2b85e60d-8238-4d32-be97-41f1f2445fda",
+  "activeVersionId": "2b85e60d-8238-4d32-be97-41f1f2445fda",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-10T02:46:46.890Z",
+      "createdAt": "2025-12-10T02:46:46.890Z",
+      "role": "workflow:owner",
+      "workflowId": "u529WeT5QZAy6yD1",
+      "projectId": "T1fAu0RPM0YkPUBu"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-19T03:34:31.557Z",
+    "createdAt": "2025-12-19T03:34:27.143Z",
+    "versionId": "2b85e60d-8238-4d32-be97-41f1f2445fda",
+    "workflowId": "u529WeT5QZAy6yD1",
+    "nodes": [
+      {
+        "parameters": {
+          "url": "=https://www.sge.com.cn/portal/marketAutomation/downloadExcelForQuoteDailyNew?start_date={{ $json.formattedDate }}&end_date={{ $json.formattedDate }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          416,
+          656
+        ],
+        "id": "d48f7c1f-e604-4ffe-9134-963e23578939",
+        "name": "HTTP Request1"
+      },
+      {
+        "parameters": {
+          "operation": "xlsx",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          576,
+          656
+        ],
+        "id": "fb191070-44ee-46f3-9b9a-5dc951516384",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84fa7e63-83ef-41c8-9775-c05d071f9866",
+                "name": "日期",
+                "value": "={{ $json['日期'] }}",
+                "type": "string"
+              },
+              {
+                "id": "7fe99cae-f3de-4f8d-9a61-60a2f6c5c6c3",
+                "name": "合约",
+                "value": "={{ $json['合约'] }}",
+                "type": "string"
+              },
+              {
+                "id": "8ff06318-f419-4ea1-9406-ec7da8943ac6",
+                "name": "开盘价",
+                "value": "={{ $json['开盘价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "088adac1-0d29-4a25-acb3-d067d1e71b07",
+                "name": "最高价",
+                "value": "={{ $json['最高价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "76671792-a1db-4d26-a591-9f9130c77a74",
+                "name": "最低价",
+                "value": "={{ $json['最低价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "bfb077e8-35c3-4444-aa12-78a79fac4e9b",
+                "name": "收盘价",
+                "value": "={{ $json['收盘价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "1fa34643-be18-485b-a9f4-96cfb7a7e6d2",
+                "name": "涨跌（元）",
+                "value": "={{ $json['涨跌（元）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "2364f214-f7fa-4148-8883-0c63ff522c22",
+                "name": "涨跌幅",
+                "value": "={{ $json['涨跌幅'] }}",
+                "type": "string"
+              },
+              {
+                "id": "fba103c2-7dcb-471f-ac8b-ee073d214f46",
+                "name": "加权平均价",
+                "value": "={{ $json['加权平均价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "06791a2f-c780-490f-b55e-99a55b0d1141",
+                "name": "成交量（kg）",
+                "value": "={{ $json['成交量（kg）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "de845f2d-7139-4b05-8e88-c4eaca8c0a58",
+                "name": "成交金额（元）",
+                "value": "={{ $json['成交金额（元）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "5fc3b6c7-e144-4dca-bc76-53f3cd85af42",
+                "name": "市场持仓（手）",
+                "value": "={{ $json['市场持仓（手）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "7a072347-1201-434a-bbc4-e78e7fcccacb",
+                "name": "交收方向",
+                "value": "={{ $json['交收方向'] }}",
+                "type": "string"
+              },
+              {
+                "id": "494bd6fa-a214-4973-8e05-2beebba34855",
+                "name": "交收量（手）",
+                "value": "={{ $json['交收量（手）'] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          768,
+          656
+        ],
+        "id": "9dcd06cd-2ee3-4492-af73-de052e860e0f",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 18,
+                "triggerAtMinute": 50
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -96,
+          656
+        ],
+        "id": "bf13a777-a180-443c-90ee-0d29f939d662",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          96,
+          656
+        ],
+        "id": "138f85e1-7b3b-4035-9c80-554e3d3f22e9",
+        "name": "currentDate"
+      },
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json.currentDate }}",
+          "format": "custom",
+          "customFormat": "yyyy-MM-dd",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          240,
+          656
+        ],
+        "id": "f050cd98-5eb2-416a-854e-ba92d75150ad",
+        "name": "formattedDate"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "table": {
+            "__rl": true,
+            "value": "sge",
+            "mode": "list",
+            "cachedResultName": "sge"
+          },
+          "columnToMatchOn": "日期",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          976,
+          656
+        ],
+        "id": "c9d4974d-b364-46a4-ae14-a857b0dc2e32",
+        "name": "Insert or update rows in a table",
+        "credentials": {
+          "mySql": {
+            "id": "S5MOE6pmmBbZ6IJi",
+            "name": "MySQL account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "HTTP Request1": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "currentDate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "currentDate": {
+        "main": [
+          [
+            {
+              "node": "formattedDate",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "formattedDate": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Insert or update rows in a table",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "rich fan",
+    "name": "Version 2b85e60d",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
