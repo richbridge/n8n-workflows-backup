@@ -1,0 +1,1467 @@
+{
+  "updatedAt": "2025-12-30T10:05:49.642Z",
+  "createdAt": "2025-12-25T09:10:11.351Z",
+  "id": "0Y4jFW3Q5fLFR8io",
+  "name": "上海黄金交易所",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.sge.com.cn/portal/marketAutomation/downloadExcelForQuoteDailyNew?start_date={{ $json.date }}&end_date={{ $json.date }}",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -576,
+        416
+      ],
+      "id": "5bf56191-a79d-4804-8c38-10e0fd4af833",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        416
+      ],
+      "id": "4e4bcaf9-1f78-43d5-a3d5-3c3d97974035",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84fa7e63-83ef-41c8-9775-c05d071f9866",
+              "name": "日期",
+              "value": "={{ $json['日期'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7fe99cae-f3de-4f8d-9a61-60a2f6c5c6c3",
+              "name": "合约",
+              "value": "={{ $json['合约'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8ff06318-f419-4ea1-9406-ec7da8943ac6",
+              "name": "开盘价",
+              "value": "={{ $json['开盘价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "088adac1-0d29-4a25-acb3-d067d1e71b07",
+              "name": "最高价",
+              "value": "={{ $json['最高价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76671792-a1db-4d26-a591-9f9130c77a74",
+              "name": "最低价",
+              "value": "={{ $json['最低价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "bfb077e8-35c3-4444-aa12-78a79fac4e9b",
+              "name": "收盘价",
+              "value": "={{ $json['收盘价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1fa34643-be18-485b-a9f4-96cfb7a7e6d2",
+              "name": "涨跌（元）",
+              "value": "={{ $json['涨跌（元）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "2364f214-f7fa-4148-8883-0c63ff522c22",
+              "name": "涨跌幅",
+              "value": "={{ $json['涨跌幅'] }}",
+              "type": "string"
+            },
+            {
+              "id": "fba103c2-7dcb-471f-ac8b-ee073d214f46",
+              "name": "加权平均价",
+              "value": "={{ $json['加权平均价'] }}",
+              "type": "string"
+            },
+            {
+              "id": "06791a2f-c780-490f-b55e-99a55b0d1141",
+              "name": "成交量（kg）",
+              "value": "={{ $json['成交量（kg）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "de845f2d-7139-4b05-8e88-c4eaca8c0a58",
+              "name": "成交金额（元）",
+              "value": "={{ $json['成交金额（元）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "5fc3b6c7-e144-4dca-bc76-53f3cd85af42",
+              "name": "市场持仓（手）",
+              "value": "={{ $json['市场持仓（手）'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7a072347-1201-434a-bbc4-e78e7fcccacb",
+              "name": "交收方向",
+              "value": "={{ $json['交收方向'] }}",
+              "type": "string"
+            },
+            {
+              "id": "494bd6fa-a214-4973-8e05-2beebba34855",
+              "name": "交收量（手）",
+              "value": "={{ $json['交收量（手）'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        416
+      ],
+      "id": "43eea3ea-3be1-4fe0-9232-a3f1fadce288",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1088,
+        432
+      ],
+      "id": "322ccf78-9645-4d02-858b-5e2bb685353b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "sge",
+          "mode": "list",
+          "cachedResultName": "sge"
+        },
+        "columnToMatchOn": "日期",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.4,
+      "position": [
+        0,
+        160
+      ],
+      "id": "2e5a2153-8bc5-4cf3-8e3c-6967a42619ca",
+      "name": "aiven",
+      "credentials": {
+        "mySql": {
+          "id": "PJMHNlXoLNgShhNC",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "sge",
+          "mode": "list",
+          "cachedResultName": "sge"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "日期",
+              "displayName": "日期",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "合约",
+              "displayName": "合约",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "开盘价",
+              "displayName": "开盘价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "最高价",
+              "displayName": "最高价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "最低价",
+              "displayName": "最低价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "收盘价",
+              "displayName": "收盘价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "涨跌（元）",
+              "displayName": "涨跌（元）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "涨跌幅",
+              "displayName": "涨跌幅",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "加权平均价",
+              "displayName": "加权平均价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "成交量（kg）",
+              "displayName": "成交量（kg）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "成交金额（元）",
+              "displayName": "成交金额（元）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "市场持仓（手）",
+              "displayName": "市场持仓（手）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "交收方向",
+              "displayName": "交收方向",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "交收量（手）",
+              "displayName": "交收量（手）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        352
+      ],
+      "id": "01e76d6e-4f1b-4cf7-8e06-7aab82371bae",
+      "name": "supabase",
+      "credentials": {
+        "postgres": {
+          "id": "R7A9kT624lsvzRVh",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "webhookUrl": "https://www.kdocs.cn/api/v3/ide/file/477935488141/script/V2-9znYgs0fJxRuSEECaL1dx/sync_task",
+        "contextParameters": {
+          "sheetName": "上海黄金交易所"
+        },
+        "argv": "={\n  \"targetSheetName\": \"上海黄金交易所\",\n  \"日期\": \"{{ $json[\"日期\"] }}\",\n  \"合约\": \"{{ $json['合约'] }}\",\n  \"开盘价\": \"{{ $json['开盘价'] }}\",\n  \"最高价\": \"{{ $json['最高价'] }}\",\n  \"最低价\": \"{{ $json['最低价'] }}\",\n  \"收盘价\": \"{{ $json['收盘价'] }}\",\n  \"涨跌（元）\": \"{{ $json['涨跌（元）'] }}\",\n  \"涨跌幅\": \"{{ $json['涨跌幅'] }}\",\n  \"加权平均价\": \"{{ $json['加权平均价'] }}\",\n  \"成交量（kg）\": \"{{ $json['成交量（kg）'] }}\",\n  \"成交金额（元）\": \"{{ $json['成交金额（元）'] }}\",\n  \"市场持仓（手）\": \"{{ $json['市场持仓（手）'] }}\",\n  \"交收方向\": \"{{ $json['交收方向'] }}\",\n  \"交收量（手）\": \"{{ $json['交收量（手）'] }}\"\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-kingsoft-airscript.kingsoftAirscript",
+      "typeVersion": 3,
+      "position": [
+        0,
+        512
+      ],
+      "id": "06f2f323-f272-4a62-a3b2-8f3e00ccf8d1",
+      "name": "Kingsoft AirScript",
+      "credentials": {
+        "kingsoftAirscriptApi": {
+          "id": "zuwN8d1XABnpp623",
+          "name": "金山 AirScript account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "bitable",
+        "operation": "bitable:table:record:batchAdd",
+        "app_toke": "Q5cDbWw98aZSQAsAkkLcoSWqnZb",
+        "table_id": "tblViGymEfvsQoRR",
+        "body": "={\n  \"records\": [\n    {\n      \"fields\": {\n        \"日期\": \"{{ $json['日期'] }}\",\n        \"合约\": \"{{ $json['合约'] }}\",\n        \"开盘价\": \"{{ $json['开盘价'] }}\",\n        \"最高价\": \"{{ $json['最高价'] }}\",\n        \"最低价\": \"{{ $json['最低价'] }}\",\n        \"收盘价\": \"{{ $json['收盘价'] }}\",\n        \"涨跌（元）\": \"{{ $json['涨跌（元）'] }}\",\n        \"涨跌幅\": \"{{ $json['涨跌幅'] }}\",\n        \"加权平均价\": \"{{ $json['加权平均价'] }}\",\n        \"成交量（kg）\": \"{{ $json['成交量（kg）'] }}\",\n        \"成交金额（元）\": \"{{ $json['成交金额（元）'] }}\",\n        \"市场持仓（手）\": \"{{ $json['市场持仓（手）'] }}\",\n        \"交收方向\": \"{{ $json['交收方向'] }}\",\n        \"交收量（手）\": \"{{ $json['交收量（手）'] }}\"\n      }\n    }\n  ]\n}"
+      },
+      "type": "n8n-nodes-feishu-lite.feishuNode",
+      "typeVersion": 1,
+      "position": [
+        0,
+        688
+      ],
+      "id": "e7f2830b-dcf2-4b93-b8f2-cc75eb6b3740",
+      "name": "Bitable:table:record:batchAdd bitable",
+      "credentials": {
+        "feishuCredentialsApi": {
+          "id": "MGuJBWjse25i2TdD",
+          "name": "Feishu Credentials account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw",
+          "mode": "list",
+          "cachedResultName": "有色金属价格数据",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 327550986,
+          "mode": "list",
+          "cachedResultName": "上海黄金交易所",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit#gid=327550986"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "日期": "={{ $json['日期'] }}",
+            "合约": "={{ $json['合约'] }}",
+            "开盘价": "={{ $json['开盘价'] }}",
+            "最高价": "={{ $json['最高价'] }}",
+            "最低价": "={{ $json['最低价'] }}",
+            "收盘价": "={{ $json['收盘价'] }}",
+            "涨跌（元）": "={{ $json['涨跌（元）'] }}",
+            "涨跌幅": "={{ $json['涨跌幅'] }}",
+            "加权平均价": "={{ $json['加权平均价'] }}",
+            "成交量（kg）": "={{ $json['成交量（kg）'] }}",
+            "成交金额（元）": "={{ $json['成交金额（元）'] }}",
+            "市场持仓（手）": "={{ $json['市场持仓（手）'] }}",
+            "交收方向": "={{ $json['交收方向'] }}",
+            "交收量（手）": "={{ $json['交收量（手）'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "日期",
+              "displayName": "日期",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "合约",
+              "displayName": "合约",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "开盘价",
+              "displayName": "开盘价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "最高价",
+              "displayName": "最高价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "最低价",
+              "displayName": "最低价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "收盘价",
+              "displayName": "收盘价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "涨跌（元）",
+              "displayName": "涨跌（元）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "涨跌幅",
+              "displayName": "涨跌幅",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "加权平均价",
+              "displayName": "加权平均价",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "成交量（kg）",
+              "displayName": "成交量（kg）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "成交金额（元）",
+              "displayName": "成交金额（元）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "市场持仓（手）",
+              "displayName": "市场持仓（手）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "交收方向",
+              "displayName": "交收方向",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "交收量（手）",
+              "displayName": "交收量（手）",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        0
+      ],
+      "id": "50c72c69-6b65-4964-87de-1cd1f58b9974",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cKaV60TGNKzpiI57",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "18c4ab98-1df6-47a5-9ac1-0f8cf8aca537",
+              "leftValue": "={{ $json.weekday }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -768,
+        432
+      ],
+      "id": "64dee34c-24bd-49e9-911f-aa199586dfae",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取当前时间并转换为特定时区\nconst now = new Date();\n\n// 设置时区偏移（例如：东八区 UTC+8）\nconst timezoneOffset = 8; // 小时\nconst utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);\nconst localTime = new Date(utcTime + (3600000 * timezoneOffset));\n\n// 格式化日期为 yyyy-mm-dd\nconst year = localTime.getFullYear();\nconst month = String(localTime.getMonth() + 1).padStart(2, '0');\nconst day = String(localTime.getDate()).padStart(2, '0');\nconst formattedDate = `${year}-${month}-${day}`;\n\n// 获取星期数\nconst dayOfWeek = localTime.getDay();\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\n\nconst result = {\n  date: formattedDate,\n  weekday: isWeekday,\n  timezone: `UTC+${timezoneOffset}`,\n  dayOfWeek: dayOfWeek\n};\n\nreturn [{\n  json: result\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        432
+      ],
+      "id": "d78bb6a8-689d-4944-804d-367278b615c7",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "aiven",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Kingsoft AirScript",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Bitable:table:record:batchAdd bitable",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Shanghai",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "f38c0661-d96f-4b67-be64-a3a27126f945",
+  "activeVersionId": "f38c0661-d96f-4b67-be64-a3a27126f945",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-25T09:10:11.355Z",
+      "createdAt": "2025-12-25T09:10:11.355Z",
+      "role": "workflow:owner",
+      "workflowId": "0Y4jFW3Q5fLFR8io",
+      "projectId": "jI4PvfBhXWyLLKDt"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-30T10:05:54.000Z",
+    "createdAt": "2025-12-30T10:04:33.277Z",
+    "versionId": "f38c0661-d96f-4b67-be64-a3a27126f945",
+    "workflowId": "0Y4jFW3Q5fLFR8io",
+    "nodes": [
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://www.sge.com.cn/portal/marketAutomation/downloadExcelForQuoteDailyNew?start_date={{ $json.date }}&end_date={{ $json.date }}",
+          "options": {
+            "allowUnauthorizedCerts": true
+          }
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -576,
+          416
+        ],
+        "id": "5bf56191-a79d-4804-8c38-10e0fd4af833",
+        "name": "HTTP Request1"
+      },
+      {
+        "parameters": {
+          "operation": "xlsx",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          -416,
+          416
+        ],
+        "id": "4e4bcaf9-1f78-43d5-a3d5-3c3d97974035",
+        "name": "Extract from File"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "84fa7e63-83ef-41c8-9775-c05d071f9866",
+                "name": "日期",
+                "value": "={{ $json['日期'] }}",
+                "type": "string"
+              },
+              {
+                "id": "7fe99cae-f3de-4f8d-9a61-60a2f6c5c6c3",
+                "name": "合约",
+                "value": "={{ $json['合约'] }}",
+                "type": "string"
+              },
+              {
+                "id": "8ff06318-f419-4ea1-9406-ec7da8943ac6",
+                "name": "开盘价",
+                "value": "={{ $json['开盘价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "088adac1-0d29-4a25-acb3-d067d1e71b07",
+                "name": "最高价",
+                "value": "={{ $json['最高价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "76671792-a1db-4d26-a591-9f9130c77a74",
+                "name": "最低价",
+                "value": "={{ $json['最低价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "bfb077e8-35c3-4444-aa12-78a79fac4e9b",
+                "name": "收盘价",
+                "value": "={{ $json['收盘价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "1fa34643-be18-485b-a9f4-96cfb7a7e6d2",
+                "name": "涨跌（元）",
+                "value": "={{ $json['涨跌（元）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "2364f214-f7fa-4148-8883-0c63ff522c22",
+                "name": "涨跌幅",
+                "value": "={{ $json['涨跌幅'] }}",
+                "type": "string"
+              },
+              {
+                "id": "fba103c2-7dcb-471f-ac8b-ee073d214f46",
+                "name": "加权平均价",
+                "value": "={{ $json['加权平均价'] }}",
+                "type": "string"
+              },
+              {
+                "id": "06791a2f-c780-490f-b55e-99a55b0d1141",
+                "name": "成交量（kg）",
+                "value": "={{ $json['成交量（kg）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "de845f2d-7139-4b05-8e88-c4eaca8c0a58",
+                "name": "成交金额（元）",
+                "value": "={{ $json['成交金额（元）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "5fc3b6c7-e144-4dca-bc76-53f3cd85af42",
+                "name": "市场持仓（手）",
+                "value": "={{ $json['市场持仓（手）'] }}",
+                "type": "string"
+              },
+              {
+                "id": "7a072347-1201-434a-bbc4-e78e7fcccacb",
+                "name": "交收方向",
+                "value": "={{ $json['交收方向'] }}",
+                "type": "string"
+              },
+              {
+                "id": "494bd6fa-a214-4973-8e05-2beebba34855",
+                "name": "交收量（手）",
+                "value": "={{ $json['交收量（手）'] }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -224,
+          416
+        ],
+        "id": "43eea3ea-3be1-4fe0-9232-a3f1fadce288",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 18
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1088,
+          432
+        ],
+        "id": "322ccf78-9645-4d02-858b-5e2bb685353b",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "table": {
+            "__rl": true,
+            "value": "sge",
+            "mode": "list",
+            "cachedResultName": "sge"
+          },
+          "columnToMatchOn": "日期",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          0,
+          160
+        ],
+        "id": "2e5a2153-8bc5-4cf3-8e3c-6967a42619ca",
+        "name": "aiven",
+        "credentials": {
+          "mySql": {
+            "id": "PJMHNlXoLNgShhNC",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "value": "sge",
+            "mode": "list",
+            "cachedResultName": "sge"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "日期",
+                "displayName": "日期",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "合约",
+                "displayName": "合约",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "开盘价",
+                "displayName": "开盘价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "最高价",
+                "displayName": "最高价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "最低价",
+                "displayName": "最低价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "收盘价",
+                "displayName": "收盘价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "涨跌（元）",
+                "displayName": "涨跌（元）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "涨跌幅",
+                "displayName": "涨跌幅",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "加权平均价",
+                "displayName": "加权平均价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "成交量（kg）",
+                "displayName": "成交量（kg）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "成交金额（元）",
+                "displayName": "成交金额（元）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "市场持仓（手）",
+                "displayName": "市场持仓（手）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "交收方向",
+                "displayName": "交收方向",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "交收量（手）",
+                "displayName": "交收量（手）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          0,
+          352
+        ],
+        "id": "01e76d6e-4f1b-4cf7-8e06-7aab82371bae",
+        "name": "supabase",
+        "credentials": {
+          "postgres": {
+            "id": "R7A9kT624lsvzRVh",
+            "name": "Postgres account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "webhookUrl": "https://www.kdocs.cn/api/v3/ide/file/477935488141/script/V2-9znYgs0fJxRuSEECaL1dx/sync_task",
+          "contextParameters": {
+            "sheetName": "上海黄金交易所"
+          },
+          "argv": "={\n  \"targetSheetName\": \"上海黄金交易所\",\n  \"日期\": \"{{ $json[\"日期\"] }}\",\n  \"合约\": \"{{ $json['合约'] }}\",\n  \"开盘价\": \"{{ $json['开盘价'] }}\",\n  \"最高价\": \"{{ $json['最高价'] }}\",\n  \"最低价\": \"{{ $json['最低价'] }}\",\n  \"收盘价\": \"{{ $json['收盘价'] }}\",\n  \"涨跌（元）\": \"{{ $json['涨跌（元）'] }}\",\n  \"涨跌幅\": \"{{ $json['涨跌幅'] }}\",\n  \"加权平均价\": \"{{ $json['加权平均价'] }}\",\n  \"成交量（kg）\": \"{{ $json['成交量（kg）'] }}\",\n  \"成交金额（元）\": \"{{ $json['成交金额（元）'] }}\",\n  \"市场持仓（手）\": \"{{ $json['市场持仓（手）'] }}\",\n  \"交收方向\": \"{{ $json['交收方向'] }}\",\n  \"交收量（手）\": \"{{ $json['交收量（手）'] }}\"\n} ",
+          "options": {}
+        },
+        "type": "n8n-nodes-kingsoft-airscript.kingsoftAirscript",
+        "typeVersion": 3,
+        "position": [
+          0,
+          512
+        ],
+        "id": "06f2f323-f272-4a62-a3b2-8f3e00ccf8d1",
+        "name": "Kingsoft AirScript",
+        "credentials": {
+          "kingsoftAirscriptApi": {
+            "id": "zuwN8d1XABnpp623",
+            "name": "金山 AirScript account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "bitable",
+          "operation": "bitable:table:record:batchAdd",
+          "app_toke": "Q5cDbWw98aZSQAsAkkLcoSWqnZb",
+          "table_id": "tblViGymEfvsQoRR",
+          "body": "={\n  \"records\": [\n    {\n      \"fields\": {\n        \"日期\": \"{{ $json['日期'] }}\",\n        \"合约\": \"{{ $json['合约'] }}\",\n        \"开盘价\": \"{{ $json['开盘价'] }}\",\n        \"最高价\": \"{{ $json['最高价'] }}\",\n        \"最低价\": \"{{ $json['最低价'] }}\",\n        \"收盘价\": \"{{ $json['收盘价'] }}\",\n        \"涨跌（元）\": \"{{ $json['涨跌（元）'] }}\",\n        \"涨跌幅\": \"{{ $json['涨跌幅'] }}\",\n        \"加权平均价\": \"{{ $json['加权平均价'] }}\",\n        \"成交量（kg）\": \"{{ $json['成交量（kg）'] }}\",\n        \"成交金额（元）\": \"{{ $json['成交金额（元）'] }}\",\n        \"市场持仓（手）\": \"{{ $json['市场持仓（手）'] }}\",\n        \"交收方向\": \"{{ $json['交收方向'] }}\",\n        \"交收量（手）\": \"{{ $json['交收量（手）'] }}\"\n      }\n    }\n  ]\n}"
+        },
+        "type": "n8n-nodes-feishu-lite.feishuNode",
+        "typeVersion": 1,
+        "position": [
+          0,
+          688
+        ],
+        "id": "e7f2830b-dcf2-4b93-b8f2-cc75eb6b3740",
+        "name": "Bitable:table:record:batchAdd bitable",
+        "credentials": {
+          "feishuCredentialsApi": {
+            "id": "MGuJBWjse25i2TdD",
+            "name": "Feishu Credentials account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw",
+            "mode": "list",
+            "cachedResultName": "有色金属价格数据",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 327550986,
+            "mode": "list",
+            "cachedResultName": "上海黄金交易所",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit#gid=327550986"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "日期": "={{ $json['日期'] }}",
+              "合约": "={{ $json['合约'] }}",
+              "开盘价": "={{ $json['开盘价'] }}",
+              "最高价": "={{ $json['最高价'] }}",
+              "最低价": "={{ $json['最低价'] }}",
+              "收盘价": "={{ $json['收盘价'] }}",
+              "涨跌（元）": "={{ $json['涨跌（元）'] }}",
+              "涨跌幅": "={{ $json['涨跌幅'] }}",
+              "加权平均价": "={{ $json['加权平均价'] }}",
+              "成交量（kg）": "={{ $json['成交量（kg）'] }}",
+              "成交金额（元）": "={{ $json['成交金额（元）'] }}",
+              "市场持仓（手）": "={{ $json['市场持仓（手）'] }}",
+              "交收方向": "={{ $json['交收方向'] }}",
+              "交收量（手）": "={{ $json['交收量（手）'] }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "日期",
+                "displayName": "日期",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "合约",
+                "displayName": "合约",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "开盘价",
+                "displayName": "开盘价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "最高价",
+                "displayName": "最高价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "最低价",
+                "displayName": "最低价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "收盘价",
+                "displayName": "收盘价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "涨跌（元）",
+                "displayName": "涨跌（元）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "涨跌幅",
+                "displayName": "涨跌幅",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "加权平均价",
+                "displayName": "加权平均价",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "成交量（kg）",
+                "displayName": "成交量（kg）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "成交金额（元）",
+                "displayName": "成交金额（元）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "市场持仓（手）",
+                "displayName": "市场持仓（手）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "交收方向",
+                "displayName": "交收方向",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "交收量（手）",
+                "displayName": "交收量（手）",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          0,
+          0
+        ],
+        "id": "50c72c69-6b65-4964-87de-1cd1f58b9974",
+        "name": "Append row in sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "cKaV60TGNKzpiI57",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "18c4ab98-1df6-47a5-9ac1-0f8cf8aca537",
+                "leftValue": "={{ $json.weekday }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -768,
+          432
+        ],
+        "id": "64dee34c-24bd-49e9-911f-aa199586dfae",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 获取当前时间并转换为特定时区\nconst now = new Date();\n\n// 设置时区偏移（例如：东八区 UTC+8）\nconst timezoneOffset = 8; // 小时\nconst utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);\nconst localTime = new Date(utcTime + (3600000 * timezoneOffset));\n\n// 格式化日期为 yyyy-mm-dd\nconst year = localTime.getFullYear();\nconst month = String(localTime.getMonth() + 1).padStart(2, '0');\nconst day = String(localTime.getDate()).padStart(2, '0');\nconst formattedDate = `${year}-${month}-${day}`;\n\n// 获取星期数\nconst dayOfWeek = localTime.getDay();\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\n\nconst result = {\n  date: formattedDate,\n  weekday: isWeekday,\n  timezone: `UTC+${timezoneOffset}`,\n  dayOfWeek: dayOfWeek\n};\n\nreturn [{\n  json: result\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -928,
+          432
+        ],
+        "id": "d78bb6a8-689d-4944-804d-367278b615c7",
+        "name": "Code in JavaScript1"
+      }
+    ],
+    "connections": {
+      "HTTP Request1": {
+        "main": [
+          [
+            {
+              "node": "Extract from File",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extract from File": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "aiven",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "supabase",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Kingsoft AirScript",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Bitable:table:record:batchAdd bitable",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "rich fan",
+    "name": "Version f38c0661",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
