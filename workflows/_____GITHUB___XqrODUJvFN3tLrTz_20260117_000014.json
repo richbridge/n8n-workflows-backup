@@ -1,0 +1,603 @@
+{
+  "updatedAt": "2025-12-26T00:05:02.281Z",
+  "createdAt": "2025-12-25T08:56:42.738Z",
+  "id": "XqrODUJvFN3tLrTz",
+  "name": "保持活跃且GITHUB备份",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "f69c42b1-b963-4da2-969e-f772d718e914",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -240,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://n8n-oaafciin.us-west-1.clawcloudrun.com/api/v1/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNmEyYmMwYy0zMzA3LTQwOGEtOGZjZC1lZjdjZWVjMzY0ZmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY2NjUzMDIwfQ.Neye1RzY-q_IJduD-Vax1OyJC2ULvTektFwcHbkhHM8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9b11a0b1-6d77-486a-b396-a04eaf9eb0c5",
+      "name": "Get All Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -16,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\n// 遍历 API 返回的所有工作流数据\nfor (const item of items[0].json.data) {\n  results.push({\n    json: {\n      id: item.id,\n      name: item.name,\n      active: item.active,\n      nodes: item.nodes,\n      connections: item.connections,\n      settings: item.settings,\n      // 生成文件名：替换掉特殊字符，防止文件名非法\n      fileName: `workflows/${item.name.replace(/[^a-zA-Z0-9-_]/g, '_')}_${item.id}.json`,\n      // 将整个对象转为格式化的 JSON 字符串\n      fileContent: JSON.stringify(item, null, 2)\n    }\n  });\n}\n\nreturn results;"
+      },
+      "id": "14cfe629-65ae-4510-8a2b-30b7a26cc895",
+      "name": "Format Data & Filename",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        -192
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "niklaus2008",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "name"
+        },
+        "filePath": "={{ $json.fileName}}",
+        "additionalParameters": {}
+      },
+      "id": "002d1b37-0a8b-4aef-bcf0-dea463e771d7",
+      "name": "get GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        32
+      ],
+      "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+      "credentials": {
+        "githubApi": {
+          "id": "0KtCZiGuLgjY8y7z",
+          "name": "GitHub account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "73c238ed-22ed-4e61-924f-ef709e434f4f",
+              "leftValue": "=$json.sha",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        32
+      ],
+      "id": "278efeea-5736-4eb2-a384-1eb583123033",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "richbridge",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "name"
+        },
+        "filePath": "={{ $node[\"Format Data & Filename\"].json.fileName.replace('.json', '') }}_{{ $now.toFormat('yyyyMMdd_HHmmss') }}.json",
+        "fileContent": "={{ $node[\"Format Data & Filename\"].json.fileContent }}",
+        "commitMessage": "=Backup: {{ $json.name }} "
+      },
+      "id": "31c458a2-6cf6-47c7-86f5-8a6a822de192",
+      "name": "first commit to GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -192
+      ],
+      "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+      "credentials": {
+        "githubApi": {
+          "id": "0KtCZiGuLgjY8y7z",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "niklaus2008",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n-workflows-backup",
+          "mode": "name"
+        },
+        "filePath": "={{ $node[\"Format Data & Filename\"].json.fileName }}",
+        "fileContent": "={{ $node[\"Format Data & Filename\"].json.fileContent }}",
+        "commitMessage": "=Backup: {{ $('get GitHub').item.json.content.name }}"
+      },
+      "id": "27f0f712-2dda-4853-a83b-a8f5ec42e4a5",
+      "name": "edit with GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1,
+      "position": [
+        208,
+        32
+      ],
+      "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+      "credentials": {
+        "githubApi": {
+          "id": "0KtCZiGuLgjY8y7z",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "尝试先判断文件是否存在\n存在则更新\n不存在则新建文件到github上，\n但因为SHA 走不通",
+        "width": 928
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        32
+      ],
+      "id": "48b37f67-0b6a-4189-89cd-247ed2741fb7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n-oaafciin.us-west-1.clawcloudrun.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -16,
+        -352
+      ],
+      "id": "0a52c1c9-a723-4bc3-b88a-bf7a66cdf2b3",
+      "name": "HTTP Request"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get All Workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Workflows": {
+      "main": [
+        [
+          {
+            "node": "Format Data & Filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Data & Filename": {
+      "main": [
+        [
+          {
+            "node": "first commit to GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get GitHub": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "edit with GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "69a89fbd-3129-4e62-8360-3a0dfddc502a",
+  "activeVersionId": "69a89fbd-3129-4e62-8360-3a0dfddc502a",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-12-25T08:56:42.741Z",
+      "createdAt": "2025-12-25T08:56:42.741Z",
+      "role": "workflow:owner",
+      "workflowId": "XqrODUJvFN3tLrTz",
+      "projectId": "jI4PvfBhXWyLLKDt"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2025-12-26T00:05:05.000Z",
+    "createdAt": "2025-12-26T00:05:02.282Z",
+    "versionId": "69a89fbd-3129-4e62-8360-3a0dfddc502a",
+    "workflowId": "XqrODUJvFN3tLrTz",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {}
+            ]
+          }
+        },
+        "id": "f69c42b1-b963-4da2-969e-f772d718e914",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -240,
+          -192
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-oaafciin.us-west-1.clawcloudrun.com/api/v1/workflows",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "X-N8N-API-KEY",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlNmEyYmMwYy0zMzA3LTQwOGEtOGZjZC1lZjdjZWVjMzY0ZmMiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzY2NjUzMDIwfQ.Neye1RzY-q_IJduD-Vax1OyJC2ULvTektFwcHbkhHM8"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "9b11a0b1-6d77-486a-b396-a04eaf9eb0c5",
+        "name": "Get All Workflows",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          -16,
+          -192
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const results = [];\n\n// 遍历 API 返回的所有工作流数据\nfor (const item of items[0].json.data) {\n  results.push({\n    json: {\n      id: item.id,\n      name: item.name,\n      active: item.active,\n      nodes: item.nodes,\n      connections: item.connections,\n      settings: item.settings,\n      // 生成文件名：替换掉特殊字符，防止文件名非法\n      fileName: `workflows/${item.name.replace(/[^a-zA-Z0-9-_]/g, '_')}_${item.id}.json`,\n      // 将整个对象转为格式化的 JSON 字符串\n      fileContent: JSON.stringify(item, null, 2)\n    }\n  });\n}\n\nreturn results;"
+        },
+        "id": "14cfe629-65ae-4510-8a2b-30b7a26cc895",
+        "name": "Format Data & Filename",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          208,
+          -192
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "get",
+          "owner": {
+            "__rl": true,
+            "value": "niklaus2008",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "name"
+          },
+          "filePath": "={{ $json.fileName}}",
+          "additionalParameters": {}
+        },
+        "id": "002d1b37-0a8b-4aef-bcf0-dea463e771d7",
+        "name": "get GitHub",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          -240,
+          32
+        ],
+        "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+        "credentials": {
+          "githubApi": {
+            "id": "0KtCZiGuLgjY8y7z",
+            "name": "GitHub account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "73c238ed-22ed-4e61-924f-ef709e434f4f",
+                "leftValue": "=$json.sha",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -16,
+          32
+        ],
+        "id": "278efeea-5736-4eb2-a384-1eb583123033",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "owner": {
+            "__rl": true,
+            "value": "richbridge",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "name"
+          },
+          "filePath": "={{ $node[\"Format Data & Filename\"].json.fileName.replace('.json', '') }}_{{ $now.toFormat('yyyyMMdd_HHmmss') }}.json",
+          "fileContent": "={{ $node[\"Format Data & Filename\"].json.fileContent }}",
+          "commitMessage": "=Backup: {{ $json.name }} "
+        },
+        "id": "31c458a2-6cf6-47c7-86f5-8a6a822de192",
+        "name": "first commit to GitHub",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          432,
+          -192
+        ],
+        "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+        "credentials": {
+          "githubApi": {
+            "id": "0KtCZiGuLgjY8y7z",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "file",
+          "operation": "edit",
+          "owner": {
+            "__rl": true,
+            "value": "niklaus2008",
+            "mode": "name"
+          },
+          "repository": {
+            "__rl": true,
+            "value": "n8n-workflows-backup",
+            "mode": "name"
+          },
+          "filePath": "={{ $node[\"Format Data & Filename\"].json.fileName }}",
+          "fileContent": "={{ $node[\"Format Data & Filename\"].json.fileContent }}",
+          "commitMessage": "=Backup: {{ $('get GitHub').item.json.content.name }}"
+        },
+        "id": "27f0f712-2dda-4853-a83b-a8f5ec42e4a5",
+        "name": "edit with GitHub",
+        "type": "n8n-nodes-base.github",
+        "typeVersion": 1,
+        "position": [
+          208,
+          32
+        ],
+        "webhookId": "3493279d-2ded-4ff9-aaf2-1616290d10cb",
+        "credentials": {
+          "githubApi": {
+            "id": "0KtCZiGuLgjY8y7z",
+            "name": "GitHub account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "content": "尝试先判断文件是否存在\n存在则更新\n不存在则新建文件到github上，\n但因为SHA 走不通",
+          "width": 928
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "typeVersion": 1,
+        "position": [
+          -432,
+          32
+        ],
+        "id": "48b37f67-0b6a-4189-89cd-247ed2741fb7",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n-oaafciin.us-west-1.clawcloudrun.com/",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          -16,
+          -352
+        ],
+        "id": "0a52c1c9-a723-4bc3-b88a-bf7a66cdf2b3",
+        "name": "HTTP Request"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Get All Workflows",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get All Workflows": {
+        "main": [
+          [
+            {
+              "node": "Format Data & Filename",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Format Data & Filename": {
+        "main": [
+          [
+            {
+              "node": "first commit to GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "get GitHub": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "edit with GitHub",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "rich fan",
+    "name": "Version 69a89fbd",
+    "description": "",
+    "autosaved": false
+  },
+  "tags": []
+}
