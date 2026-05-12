@@ -1,0 +1,106 @@
+{
+  "updatedAt": "2026-04-29T02:52:56.380Z",
+  "createdAt": "2026-04-29T02:48:10.662Z",
+  "id": "b5TDwnaPKASG1Rcc",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "请上传PDF",
+        "formDescription": "测试",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "发放",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -288,
+        -64
+      ],
+      "id": "18240cab-8aa4-406a-b156-25b650d484c5",
+      "name": "On form submission",
+      "webhookId": "e614bdaa-b4a3-4c8b-9fa6-23fa3a7f47cd"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取上一步提取的文本内容，请根据实际情况调整字段名\nconst pdfText = $input.first().json.data; \n\n// 1. 定义章节分隔符（请替换为你 PDF 中的章节标题格式）\n// 例如：按 \"Chapter 1\"、\"Chapter 2\" 或 \"第1章\"、\"第2章\" 进行分割\nconst chapterRegex = /(?=Chapter \\d+|(?=第\\d+章))/g; \n\n// 2. 执行拆分\n// 思路：先识别所有章节标题的位置，然后将文本切块\nconst chapters = [];\nlet lastIndex = 0;\nlet match;\n\n// 重置正则表达式\nconst regex = new RegExp(chapterRegex.source, 'g');\n\n// 查找所有章节标题\nwhile ((match = regex.exec(pdfText)) !== null) {\n    if (lastIndex !== 0) {\n        const content = pdfText.substring(lastIndex, match.index);\n        chapters.push({ content: content.trim() });\n    }\n    lastIndex = match.index;\n}\n// 添加最后一个章节\nif (lastIndex < pdfText.length) {\n    chapters.push({ content: pdfText.substring(lastIndex).trim() });\n}\n\n// 3. 输出结果，每个章节作为独立的 item\nreturn chapters.map((chapter, index) => ({\n    json: {\n        chapterNumber: index + 1,\n        content: chapter.content\n    }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -64
+      ],
+      "id": "308f061e-0eeb-41e2-a7e9-b890db39604a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -80,
+        -64
+      ],
+      "id": "74868dc4-5454-425d-bdfd-732d4c26205c",
+      "name": "Extract from File"
+    }
+  ],
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "0911579a-cd52-4a07-a42d-f8a40854b440",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-29T02:48:10.662Z",
+      "createdAt": "2026-04-29T02:48:10.662Z",
+      "role": "workflow:owner",
+      "workflowId": "b5TDwnaPKASG1Rcc",
+      "projectId": "T1fAu0RPM0YkPUBu"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
