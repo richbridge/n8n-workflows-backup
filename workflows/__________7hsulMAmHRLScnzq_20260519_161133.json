@@ -1,0 +1,1664 @@
+{
+  "updatedAt": "2026-05-19T07:33:03.098Z",
+  "createdAt": "2026-05-19T03:12:21.601Z",
+  "id": "7hsulMAmHRLScnzq",
+  "name": "上海有色网数据采集",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1600,
+        736
+      ],
+      "id": "354fb8f6-90be-40b8-827f-61d86189f3ad",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.urls }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -288,
+        736
+      ],
+      "id": "a9379674-9c16-4a1c-a726-2519b7f12cf8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95768ffe-cfb5-43c7-950a-ac47fa9e2c6f",
+              "name": "product_id",
+              "value": "={{ $json.data.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "36afdbac-b220-4212-a596-542623f06319",
+              "name": "highs",
+              "value": "={{ $json.data.highs }}",
+              "type": "number"
+            },
+            {
+              "id": "4bd59a6a-fde0-472b-af40-8fd0977c065f",
+              "name": "low",
+              "value": "={{ $json.data.low }}",
+              "type": "number"
+            },
+            {
+              "id": "78d77850-6270-49d4-98bc-6b18209bd901",
+              "name": "average",
+              "value": "={{ $json.data.average }}",
+              "type": "number"
+            },
+            {
+              "id": "bef64581-42a9-4afc-bb9f-7ba2cc166ee1",
+              "name": "vchange",
+              "value": "={{ $json.data.vchange }}",
+              "type": "number"
+            },
+            {
+              "id": "21c65c66-0c4f-43b2-8671-fba7138afe78",
+              "name": "vchange_rate",
+              "value": "={{ $json.data.vchange_rate }}",
+              "type": "number"
+            },
+            {
+              "id": "5d1028bd-5d83-4c40-8bb9-49b28380fef4",
+              "name": "renew_date",
+              "value": "={{ $json.data.renew_date }}",
+              "type": "string"
+            },
+            {
+              "id": "b1f5d214-4c4f-4377-94f8-a8552efa644c",
+              "name": "low_show",
+              "value": "={{ $json.data.low_show }}",
+              "type": "number"
+            },
+            {
+              "id": "7cebb41a-dea8-4836-8040-223fbceaa481",
+              "name": "high_show",
+              "value": "={{ $json.data.high_show }}",
+              "type": "number"
+            },
+            {
+              "id": "9127493b-4806-400a-8e63-139d0eee2146",
+              "name": "average_show",
+              "value": "={{ $json.data.average_show }}",
+              "type": "number"
+            },
+            {
+              "id": "bf737e90-f61a-41f8-ad2d-472c8ea5005b",
+              "name": "change_value_show",
+              "value": "={{ $json.data.change_value_show }}",
+              "type": "number"
+            },
+            {
+              "id": "2a3ed555-1868-47ae-8b3e-7c259698dd35",
+              "name": "change_rate_show",
+              "value": "={{ $json.data.change_rate_show }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        432
+      ],
+      "id": "f71dbc6f-e564-4f65-ba95-699ac60ba3c1",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7a55300-dcab-45c1-8283-da0b4e9548a8",
+              "name": "urls",
+              "value": "=[\n\"https://hq.smm.cn/ajax/spot/history/201102250376/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201912300001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201211190003/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201704240001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260003/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250311/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250319/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250397/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250010/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250211/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/2011022500001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250173/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202010210003/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201504080006/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250158/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250239/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208290001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250140/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250375/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250381/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250059/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201309290001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208300001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250360/{{ $json.date }}/{{ $json.date }}\"\n] ",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -960,
+        720
+      ],
+      "id": "0201a9c6-02d1-452c-ab99-9330aa9e8513",
+      "name": "setarray"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        720
+      ],
+      "id": "ff9344e8-22d8-464d-b91c-b95eae1019fc",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "urls",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -752,
+        720
+      ],
+      "id": "402a063d-5eab-417d-b5ad-60e24593b02a",
+      "name": "SplitUrls"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9f6912cb-20b9-407a-a432-b4c75fa70c3f",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        736
+      ],
+      "id": "43743f30-0d76-4635-b358-e4c60d86c9c2",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        736
+      ],
+      "id": "101ac352-941c-4772-a93f-4601f663c567",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw",
+          "mode": "list",
+          "cachedResultName": "有色金属价格数据",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1961085804,
+          "mode": "list",
+          "cachedResultName": "上海有色网",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit#gid=1961085804"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "product_id": "={{ $json.product_id }}",
+            "highs": "={{ $json.highs }}",
+            "low": "={{ $json.low }}",
+            "average": "={{ $json.average }}",
+            "vchange": "={{ $json.vchange }}",
+            "vchange_rate": "={{ $json.vchange_rate }}",
+            "renew_date": "={{ $json.renew_date }}",
+            "low_show": "={{ $json.low_show }}",
+            "high_show": "={{ $json.high_show }}",
+            "average_show": "={{ $json.average_show }}",
+            "change_value_show": "={{ $json.change_value_show }}",
+            "change_rate_show": "={{ $json.change_rate_show }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_id",
+              "displayName": "product_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "highs",
+              "displayName": "highs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "low",
+              "displayName": "low",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "average",
+              "displayName": "average",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vchange",
+              "displayName": "vchange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vchange_rate",
+              "displayName": "vchange_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "renew_date",
+              "displayName": "renew_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "low_show",
+              "displayName": "low_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "high_show",
+              "displayName": "high_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "average_show",
+              "displayName": "average_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "change_value_show",
+              "displayName": "change_value_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "change_rate_show",
+              "displayName": "change_rate_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -64,
+        -144
+      ],
+      "id": "ff7cbc9c-524f-4aea-b34b-ece245e6af91",
+      "name": "google",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ql6GpFz3iUDqYrbV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "smmcn",
+          "mode": "list",
+          "cachedResultName": "smmcn"
+        },
+        "columnToMatchOn": "renew_date",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -64,
+        48
+      ],
+      "id": "8315f2ba-0c16-47aa-af05-6e440df0d2cb",
+      "name": "aiven",
+      "credentials": {
+        "mySql": {
+          "id": "yCZ3mplRDi4CQkwj",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "runModeV3": "aggregateOnce",
+        "aggregate": {},
+        "webhookUrl": "https://www.kdocs.cn/api/v3/ide/file/cg0KvMi5ueJG/script/V2-5P9qHzr3wd7vkNK4pz63cQ/sync_task",
+        "contextParameters": {},
+        "argv": "={\n  \"active_sheet\": \"上海有色网数据\",\n  \"data\": \"={{ $json.data }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-kingsoft-airscript.kingsoftAirscript",
+      "typeVersion": 3,
+      "position": [
+        112,
+        272
+      ],
+      "id": "ceaa8f03-7d48-489c-aaa9-92d67c604245",
+      "name": "wps",
+      "credentials": {
+        "kingsoftAirscriptApi": {
+          "id": "PQu1Zm20jaJnjx3s",
+          "name": "金山 AirScript account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "smm",
+          "mode": "list",
+          "cachedResultName": "smm"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {
+            "highs": 0,
+            "low": 0,
+            "average": 0,
+            "vchange_rate": 0,
+            "low_show": 0,
+            "high_show": 0,
+            "average_show": 0,
+            "change_value_show": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_id",
+              "displayName": "product_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "highs",
+              "displayName": "highs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "low",
+              "displayName": "low",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "average",
+              "displayName": "average",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vchange_rate",
+              "displayName": "vchange_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "renew_date",
+              "displayName": "renew_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "low_show",
+              "displayName": "low_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "high_show",
+              "displayName": "high_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "average_show",
+              "displayName": "average_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "change_value_show",
+              "displayName": "change_value_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "change_rate_show",
+              "displayName": "change_rate_show",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vchange",
+              "displayName": "vchange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        48,
+        512
+      ],
+      "id": "29fe4a6c-0412-4352-b8f8-dda30f8513c4",
+      "name": "supabase",
+      "credentials": {
+        "postgres": {
+          "id": "nyuMK7Uc6frm8dfK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取当前时间并转换为特定时区\nconst now = new Date();\n\n// 设置时区偏移（例如：东八区 UTC+8）\nconst timezoneOffset = 8; // 小时\nconst utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);\nconst localTime = new Date(utcTime + (3600000 * timezoneOffset));\n\n// 格式化日期为 yyyy-mm-dd\nconst year = localTime.getFullYear();\nconst month = String(localTime.getMonth() + 1).padStart(2, '0');\nconst day = String(localTime.getDate()).padStart(2, '0');\nconst formattedDate = `${year}-${month}-${day}`;\n\n// 获取星期数\nconst dayOfWeek = localTime.getDay();\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\n\nconst result = {\n  date: formattedDate,\n  weekday: isWeekday,\n  timezone: `UTC+${timezoneOffset}`,\n  dayOfWeek: dayOfWeek\n};\n\nreturn [{\n  json: result\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1392,
+        736
+      ],
+      "id": "5ec190a9-00a7-49a1-8adc-b806ba0af7ed",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "18c4ab98-1df6-47a5-9ac1-0f8cf8aca537",
+              "leftValue": "={{ $json.weekday }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1168,
+        736
+      ],
+      "id": "743cfed9-7df7-4669-a268-08baab4c68f6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst dataArray = items.map(item => ({\n  product_id: item.json.product_id,\n  highs: item.json.highs,\n  low: item.json.low,\n  average: item.json.average,\n  vchange: item.json.vchange,\n  vchange_rate: item.json.vchange_rate,\n  renew_date: item.json.renew_date,\n  low_show: item.json.low_show,\n  high_show: item.json.high_show,\n  average_show: item.json.average_show,\n  change_value_show: item.json.change_value_show,\n  change_rate_show: item.json.change_rate_show\n}));\n\nreturn {\n  active_sheet: \"上海有色网数据\",\n  data: dataArray\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        272
+      ],
+      "id": "e0f39b54-1b12-476a-bfda-ca9c94cb3e90",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "aiven",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "google",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "setarray": {
+      "main": [
+        [
+          {
+            "node": "SplitUrls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitUrls": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "setarray",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "wps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "b70b720d-f443-4cf2-b695-5b8406caf420",
+  "activeVersionId": "b70b720d-f443-4cf2-b695-5b8406caf420",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-19T03:12:21.615Z",
+      "createdAt": "2026-05-19T03:12:21.615Z",
+      "role": "workflow:owner",
+      "workflowId": "7hsulMAmHRLScnzq",
+      "projectId": "mAGMOyMmFHehjPGm"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-19T07:33:25.000Z",
+    "createdAt": "2026-05-19T07:20:12.625Z",
+    "versionId": "b70b720d-f443-4cf2-b695-5b8406caf420",
+    "workflowId": "7hsulMAmHRLScnzq",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 18
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1600,
+          736
+        ],
+        "id": "354fb8f6-90be-40b8-827f-61d86189f3ad",
+        "name": "Schedule Trigger"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.urls }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -288,
+          736
+        ],
+        "id": "a9379674-9c16-4a1c-a726-2519b7f12cf8",
+        "name": "HTTP Request"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "95768ffe-cfb5-43c7-950a-ac47fa9e2c6f",
+                "name": "product_id",
+                "value": "={{ $json.data.product_id }}",
+                "type": "string"
+              },
+              {
+                "id": "36afdbac-b220-4212-a596-542623f06319",
+                "name": "highs",
+                "value": "={{ $json.data.highs }}",
+                "type": "number"
+              },
+              {
+                "id": "4bd59a6a-fde0-472b-af40-8fd0977c065f",
+                "name": "low",
+                "value": "={{ $json.data.low }}",
+                "type": "number"
+              },
+              {
+                "id": "78d77850-6270-49d4-98bc-6b18209bd901",
+                "name": "average",
+                "value": "={{ $json.data.average }}",
+                "type": "number"
+              },
+              {
+                "id": "bef64581-42a9-4afc-bb9f-7ba2cc166ee1",
+                "name": "vchange",
+                "value": "={{ $json.data.vchange }}",
+                "type": "number"
+              },
+              {
+                "id": "21c65c66-0c4f-43b2-8671-fba7138afe78",
+                "name": "vchange_rate",
+                "value": "={{ $json.data.vchange_rate }}",
+                "type": "number"
+              },
+              {
+                "id": "5d1028bd-5d83-4c40-8bb9-49b28380fef4",
+                "name": "renew_date",
+                "value": "={{ $json.data.renew_date }}",
+                "type": "string"
+              },
+              {
+                "id": "b1f5d214-4c4f-4377-94f8-a8552efa644c",
+                "name": "low_show",
+                "value": "={{ $json.data.low_show }}",
+                "type": "number"
+              },
+              {
+                "id": "7cebb41a-dea8-4836-8040-223fbceaa481",
+                "name": "high_show",
+                "value": "={{ $json.data.high_show }}",
+                "type": "number"
+              },
+              {
+                "id": "9127493b-4806-400a-8e63-139d0eee2146",
+                "name": "average_show",
+                "value": "={{ $json.data.average_show }}",
+                "type": "number"
+              },
+              {
+                "id": "bf737e90-f61a-41f8-ad2d-472c8ea5005b",
+                "name": "change_value_show",
+                "value": "={{ $json.data.change_value_show }}",
+                "type": "number"
+              },
+              {
+                "id": "2a3ed555-1868-47ae-8b3e-7c259698dd35",
+                "name": "change_rate_show",
+                "value": "={{ $json.data.change_rate_show }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -384,
+          432
+        ],
+        "id": "f71dbc6f-e564-4f65-ba95-699ac60ba3c1",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a7a55300-dcab-45c1-8283-da0b4e9548a8",
+                "name": "urls",
+                "value": "=[\n\"https://hq.smm.cn/ajax/spot/history/201102250376/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201912300001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201211190003/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201704240001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202002260003/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250311/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250319/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250397/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250010/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250211/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/2011022500001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250173/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202010210003/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201504080006/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250158/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250239/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208290001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250140/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250375/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250381/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250059/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201309290001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/202208300001/{{ $json.date }}/{{ $json.date }}\",\n\"https://hq.smm.cn/ajax/spot/history/201102250360/{{ $json.date }}/{{ $json.date }}\"\n] ",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -960,
+          720
+        ],
+        "id": "0201a9c6-02d1-452c-ab99-9330aa9e8513",
+        "name": "setarray"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -560,
+          720
+        ],
+        "id": "ff9344e8-22d8-464d-b91c-b95eae1019fc",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "urls",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -752,
+          720
+        ],
+        "id": "402a063d-5eab-417d-b5ad-60e24593b02a",
+        "name": "SplitUrls"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "9f6912cb-20b9-407a-a432-b4c75fa70c3f",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -128,
+          736
+        ],
+        "id": "43743f30-0d76-4635-b358-e4c60d86c9c2",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          48,
+          736
+        ],
+        "id": "101ac352-941c-4772-a93f-4601f663c567",
+        "name": "Code"
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw",
+            "mode": "list",
+            "cachedResultName": "有色金属价格数据",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 1961085804,
+            "mode": "list",
+            "cachedResultName": "上海有色网",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit#gid=1961085804"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "product_id": "={{ $json.product_id }}",
+              "highs": "={{ $json.highs }}",
+              "low": "={{ $json.low }}",
+              "average": "={{ $json.average }}",
+              "vchange": "={{ $json.vchange }}",
+              "vchange_rate": "={{ $json.vchange_rate }}",
+              "renew_date": "={{ $json.renew_date }}",
+              "low_show": "={{ $json.low_show }}",
+              "high_show": "={{ $json.high_show }}",
+              "average_show": "={{ $json.average_show }}",
+              "change_value_show": "={{ $json.change_value_show }}",
+              "change_rate_show": "={{ $json.change_rate_show }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "product_id",
+                "displayName": "product_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "highs",
+                "displayName": "highs",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "low",
+                "displayName": "low",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "average",
+                "displayName": "average",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "vchange",
+                "displayName": "vchange",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "vchange_rate",
+                "displayName": "vchange_rate",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "renew_date",
+                "displayName": "renew_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "low_show",
+                "displayName": "low_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "high_show",
+                "displayName": "high_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "average_show",
+                "displayName": "average_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "change_value_show",
+                "displayName": "change_value_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "change_rate_show",
+                "displayName": "change_rate_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          -64,
+          -144
+        ],
+        "id": "ff7cbc9c-524f-4aea-b34b-ece245e6af91",
+        "name": "google",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ql6GpFz3iUDqYrbV",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "table": {
+            "__rl": true,
+            "value": "smmcn",
+            "mode": "list",
+            "cachedResultName": "smmcn"
+          },
+          "columnToMatchOn": "renew_date",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.5,
+        "position": [
+          -64,
+          48
+        ],
+        "id": "8315f2ba-0c16-47aa-af05-6e440df0d2cb",
+        "name": "aiven",
+        "credentials": {
+          "mySql": {
+            "id": "yCZ3mplRDi4CQkwj",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "runModeV3": "aggregateOnce",
+          "aggregate": {},
+          "webhookUrl": "https://www.kdocs.cn/api/v3/ide/file/cg0KvMi5ueJG/script/V2-5P9qHzr3wd7vkNK4pz63cQ/sync_task",
+          "contextParameters": {},
+          "argv": "={\n  \"active_sheet\": \"上海有色网数据\",\n  \"data\": \"={{ $json.data }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-kingsoft-airscript.kingsoftAirscript",
+        "typeVersion": 3,
+        "position": [
+          112,
+          272
+        ],
+        "id": "ceaa8f03-7d48-489c-aaa9-92d67c604245",
+        "name": "wps",
+        "credentials": {
+          "kingsoftAirscriptApi": {
+            "id": "PQu1Zm20jaJnjx3s",
+            "name": "金山 AirScript account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "schema": {
+            "__rl": true,
+            "value": "public",
+            "mode": "list",
+            "cachedResultName": "public"
+          },
+          "table": {
+            "__rl": true,
+            "value": "smm",
+            "mode": "list",
+            "cachedResultName": "smm"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {
+              "highs": 0,
+              "low": 0,
+              "average": 0,
+              "vchange_rate": 0,
+              "low_show": 0,
+              "high_show": 0,
+              "average_show": 0,
+              "change_value_show": 0
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "product_id",
+                "displayName": "product_id",
+                "required": true,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "highs",
+                "displayName": "highs",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "low",
+                "displayName": "low",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "average",
+                "displayName": "average",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "vchange_rate",
+                "displayName": "vchange_rate",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "renew_date",
+                "displayName": "renew_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "dateTime",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "low_show",
+                "displayName": "low_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "high_show",
+                "displayName": "high_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "average_show",
+                "displayName": "average_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "change_value_show",
+                "displayName": "change_value_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "change_rate_show",
+                "displayName": "change_rate_show",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "vchange",
+                "displayName": "vchange",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          48,
+          512
+        ],
+        "id": "29fe4a6c-0412-4352-b8f8-dda30f8513c4",
+        "name": "supabase",
+        "credentials": {
+          "postgres": {
+            "id": "nyuMK7Uc6frm8dfK",
+            "name": "Postgres account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "// 获取当前时间并转换为特定时区\nconst now = new Date();\n\n// 设置时区偏移（例如：东八区 UTC+8）\nconst timezoneOffset = 8; // 小时\nconst utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);\nconst localTime = new Date(utcTime + (3600000 * timezoneOffset));\n\n// 格式化日期为 yyyy-mm-dd\nconst year = localTime.getFullYear();\nconst month = String(localTime.getMonth() + 1).padStart(2, '0');\nconst day = String(localTime.getDate()).padStart(2, '0');\nconst formattedDate = `${year}-${month}-${day}`;\n\n// 获取星期数\nconst dayOfWeek = localTime.getDay();\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\n\nconst result = {\n  date: formattedDate,\n  weekday: isWeekday,\n  timezone: `UTC+${timezoneOffset}`,\n  dayOfWeek: dayOfWeek\n};\n\nreturn [{\n  json: result\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1392,
+          736
+        ],
+        "id": "5ec190a9-00a7-49a1-8adc-b806ba0af7ed",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "18c4ab98-1df6-47a5-9ac1-0f8cf8aca537",
+                "leftValue": "={{ $json.weekday }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -1168,
+          736
+        ],
+        "id": "743cfed9-7df7-4669-a268-08baab4c68f6",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nconst dataArray = items.map(item => ({\n  product_id: item.json.product_id,\n  highs: item.json.highs,\n  low: item.json.low,\n  average: item.json.average,\n  vchange: item.json.vchange,\n  vchange_rate: item.json.vchange_rate,\n  renew_date: item.json.renew_date,\n  low_show: item.json.low_show,\n  high_show: item.json.high_show,\n  average_show: item.json.average_show,\n  change_value_show: item.json.change_value_show,\n  change_rate_show: item.json.change_rate_show\n}));\n\nreturn {\n  active_sheet: \"上海有色网数据\",\n  data: dataArray\n};"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -64,
+          272
+        ],
+        "id": "e0f39b54-1b12-476a-bfda-ca9c94cb3e90",
+        "name": "Code in JavaScript1"
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "supabase",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "aiven",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "google",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "setarray": {
+        "main": [
+          [
+            {
+              "node": "SplitUrls",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "SplitUrls": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Code",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "setarray",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "wps",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "rich fan",
+    "name": "Version b70b720d",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
