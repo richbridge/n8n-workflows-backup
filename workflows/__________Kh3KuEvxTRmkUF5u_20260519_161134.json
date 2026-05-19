@@ -1,0 +1,1576 @@
+{
+  "updatedAt": "2026-05-19T08:11:14.673Z",
+  "createdAt": "2026-05-19T03:09:58.636Z",
+  "id": "Kh3KuEvxTRmkUF5u",
+  "name": "长江有色网数据采集",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1840,
+        784
+      ],
+      "id": "d49f6502-03e2-4492-b5ae-4c4504aa3fa9",
+      "name": "触发器"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.urls }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "user-agent",
+              "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -480,
+        1056
+      ],
+      "id": "7ba2e3a9-68b1-4292-9519-6c3c561c6bcb",
+      "name": "获取数据"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dd68c0bf-6802-462e-a861-0963ce5f14cc",
+              "name": "product_id",
+              "value": "={{ $json.data.product_id }}",
+              "type": "string"
+            },
+            {
+              "id": "620e8ce2-9b43-4812-b9bf-3f4330c5c1a2",
+              "name": "highs",
+              "value": "={{ $json.data.highs }}",
+              "type": "number"
+            },
+            {
+              "id": "d5e03c25-902a-40e5-ab98-c108515dbbe8",
+              "name": "low",
+              "value": "={{ $json.data.low }}",
+              "type": "number"
+            },
+            {
+              "id": "92784ca1-1c50-4add-a089-15d9d2154818",
+              "name": "average",
+              "value": "={{ $json.data.average }}",
+              "type": "number"
+            },
+            {
+              "id": "366012fb-edea-492c-9bbf-22c1e85ea70d",
+              "name": "vchange",
+              "value": "={{ $json.data.vchange }}",
+              "type": "number"
+            },
+            {
+              "id": "dfef8d21-83e8-480e-a55a-90c4db307e62",
+              "name": "renew_date",
+              "value": "={{ $json.data.renew_date }}",
+              "type": "string"
+            },
+            {
+              "id": "b8bfa5d3-4230-4f09-887e-ede541fb1451",
+              "name": "vchange_rate",
+              "value": "={{ $json.data.vchange_rate }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        576
+      ],
+      "id": "29bd7319-ed28-4e3f-94ae-e817e8707580",
+      "name": "格式化数据匹配数据库"
+    },
+    {
+      "parameters": {
+        "batchSize": "=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -736,
+        768
+      ],
+      "id": "6a4f7c73-66aa-46e3-87fc-7acc6ece7b5f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1e82dd11-219d-417a-a100-e5fdcdb49382",
+              "name": "urls",
+              "value": "=[\n\"https://cj.smm.cn/ajax/spot/history/201102250293/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250398/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250290/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250428/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250307/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250115/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250008/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/202201040001/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250459/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250109/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250166/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250130/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250502/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250574/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250385/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250391/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250404/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250146/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250386/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250215/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250455/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250605/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250043/{{ $json.date }}/{{ $json.date }}\"\n] ",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1168,
+        768
+      ],
+      "id": "7f345557-540f-41c8-8388-be3e1d2c0d0a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "urls",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        768
+      ],
+      "id": "2c95afa3-11c8-428d-a530-769dce3dc162",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        1056
+      ],
+      "id": "02e2037b-b584-491c-94b8-aa3f5945cd3f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dc6e0398-9edd-4db5-9411-b9b7481c116a",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        1056
+      ],
+      "id": "5efb6738-4df4-43a0-994f-a6a5c778434e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "cjsmm",
+          "mode": "list",
+          "cachedResultName": "cjsmm"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_id",
+              "displayName": "product_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "highs",
+              "displayName": "highs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "low",
+              "displayName": "low",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "average",
+              "displayName": "average",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vchange",
+              "displayName": "vchange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "renew_date",
+              "displayName": "renew_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "vchange_rate",
+              "displayName": "vchange_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -288,
+        704
+      ],
+      "id": "f81b0edb-3253-43f3-9906-7d4174dd3b18",
+      "name": "supabase",
+      "credentials": {
+        "postgres": {
+          "id": "nyuMK7Uc6frm8dfK",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "table": {
+          "__rl": true,
+          "value": "cjsmmcn",
+          "mode": "list",
+          "cachedResultName": "cjsmmcn"
+        },
+        "columnToMatchOn": "product_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        -272,
+        144
+      ],
+      "id": "35a98369-b183-4503-b55b-cbe30f6e2467",
+      "name": "aiven",
+      "credentials": {
+        "mySql": {
+          "id": "yCZ3mplRDi4CQkwj",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "webhookUrl": "https://www.kdocs.cn/api/v3/ide/file/475253428153/script/V2-5xxwYuhzUByVy5ax1HAtaP/sync_task",
+        "contextParameters": {
+          "sheetName": "长江有色网数据"
+        },
+        "argv": "={\n  \"active_sheet\": \"上海有色网数据\",\n  \"data\": \"={{ $json.data }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-kingsoft-airscript.kingsoftAirscript",
+      "typeVersion": 3,
+      "position": [
+        0,
+        368
+      ],
+      "id": "c7f009d0-b891-4f04-af23-1bf227943dce",
+      "name": "wps",
+      "credentials": {
+        "kingsoftAirscriptApi": {
+          "id": "PQu1Zm20jaJnjx3s",
+          "name": "金山 AirScript account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw",
+          "mode": "list",
+          "cachedResultName": "有色金属价格数据",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "长江有色网",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "product_id": "={{ $json.product_id }}",
+            "highs": "={{ $json.highs }}",
+            "low": "={{ $json.low }}",
+            "average": "={{ $json.average }}",
+            "vchange": "={{ $json.vchange }}",
+            "renew_date": "={{ $json.renew_date }}",
+            "vchange_rate": "={{ $json.vchange_rate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "product_id",
+              "displayName": "product_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "highs",
+              "displayName": "highs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "low",
+              "displayName": "low",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "average",
+              "displayName": "average",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vchange",
+              "displayName": "vchange",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "renew_date",
+              "displayName": "renew_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vchange_rate",
+              "displayName": "vchange_rate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -272,
+        -32
+      ],
+      "id": "96d8863d-81fc-4628-aac2-c5496409c83d",
+      "name": "google",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ql6GpFz3iUDqYrbV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "18c4ab98-1df6-47a5-9ac1-0f8cf8aca537",
+              "leftValue": "={{ $json.weekday }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1376,
+        784
+      ],
+      "id": "2fdf1ab0-9565-4dd0-96cd-45be065c9916",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 获取当前时间并转换为特定时区\nconst now = new Date();\n\n// 设置时区偏移（例如：东八区 UTC+8）\nconst timezoneOffset = 8; // 小时\nconst utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);\nconst localTime = new Date(utcTime + (3600000 * timezoneOffset));\n\n// 格式化日期为 yyyy-mm-dd\nconst year = localTime.getFullYear();\nconst month = String(localTime.getMonth() + 1).padStart(2, '0');\nconst day = String(localTime.getDate()).padStart(2, '0');\nconst formattedDate = `${year}-${month}-${day}`;\n\n// 获取星期数\nconst dayOfWeek = localTime.getDay();\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\n\nconst result = {\n  date: formattedDate,\n  weekday: isWeekday,\n  timezone: `UTC+${timezoneOffset}`,\n  dayOfWeek: dayOfWeek\n};\n\nreturn [{\n  json: result\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1600,
+        784
+      ],
+      "id": "a66d8f56-2d84-4ff4-91bc-f2cd9e1deade",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst dataArray = items.map(item => ({\n  product_id: item.json.product_id,\n  highs: item.json.highs,\n  low: item.json.low,\n  average: item.json.average,\n  vchange: item.json.vchange,\n  vchange_rate: item.json.vchange_rate,\n  renew_date: item.json.renew_date\n}));\n\nreturn {\n  active_sheet: \"长江有色网数据\",\n  data: dataArray\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        368
+      ],
+      "id": "9a4201a7-7fa6-480a-8c82-b194351994a6",
+      "name": "Code in JavaScript2"
+    }
+  ],
+  "connections": {
+    "触发器": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "获取数据": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "格式化数据匹配数据库": {
+      "main": [
+        [
+          {
+            "node": "supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "aiven",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "google",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "格式化数据匹配数据库",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "获取数据",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "wps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:触发器": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Code in JavaScript2": [
+      {
+        "json": {
+          "active_sheet": "长江有色网数据",
+          "data": [
+            {
+              "product_id": "201102250293",
+              "highs": 104220,
+              "low": 104180,
+              "average": 104200,
+              "vchange": -220,
+              "vchange_rate": -0.0021068760773798123,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250398",
+              "highs": 24210,
+              "low": 24170,
+              "average": 24190,
+              "vchange": 150,
+              "vchange_rate": 0.006239600665557404,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250290",
+              "highs": 264000,
+              "low": 261000,
+              "average": 262500,
+              "vchange": -4500,
+              "vchange_rate": -0.016853932584269662,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250428",
+              "highs": 25480,
+              "low": 24480,
+              "average": 24980,
+              "vchange": -110,
+              "vchange_rate": -0.00438421681944998,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250307",
+              "highs": 24480,
+              "low": 24430,
+              "average": 24455,
+              "vchange": -110,
+              "vchange_rate": -0.004477915733767555,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250115",
+              "highs": 144500,
+              "low": 140800,
+              "average": 142650,
+              "vchange": -300,
+              "vchange_rate": -0.002098635886673662,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250008",
+              "highs": 408900,
+              "low": 403900,
+              "average": 406400,
+              "vchange": -2700,
+              "vchange_rate": -0.0065998533365925205,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "202201040001",
+              "highs": 109200,
+              "low": 109200,
+              "average": 109200,
+              "vchange": -220,
+              "vchange_rate": -0.0020106013525863645,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250459",
+              "highs": 105510,
+              "low": 105210,
+              "average": 105360,
+              "vchange": -220,
+              "vchange_rate": -0.0020837279787838604,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250109",
+              "highs": 111400,
+              "low": 107400,
+              "average": 109400,
+              "vchange": -220,
+              "vchange_rate": -0.0020069330414158,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250166",
+              "highs": 18793,
+              "low": 18783,
+              "average": 18788,
+              "vchange": 439,
+              "vchange_rate": 0.023925009537304486,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250130",
+              "highs": 24700,
+              "low": 24300,
+              "average": 24500,
+              "vchange": 200,
+              "vchange_rate": 0.00823045267489712,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250502",
+              "highs": 25000,
+              "low": 23400,
+              "average": 24200,
+              "vchange": 150,
+              "vchange_rate": 0.006237006237006237,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250574",
+              "highs": 26660,
+              "low": 26660,
+              "average": 26660,
+              "vchange": -110,
+              "vchange_rate": -0.004109077325364214,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250385",
+              "highs": 429000,
+              "low": 422000,
+              "average": 425500,
+              "vchange": 500,
+              "vchange_rate": 0.001176470588235294,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250391",
+              "highs": 159000,
+              "low": 155000,
+              "average": 157000,
+              "vchange": -2000,
+              "vchange_rate": -0.012578616352201259,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250404",
+              "highs": 157000,
+              "low": 152000,
+              "average": 154500,
+              "vchange": -2000,
+              "vchange_rate": -0.012779552715654952,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250146",
+              "highs": 10200,
+              "low": 9200,
+              "average": 9700,
+              "vchange": null,
+              "vchange_rate": null,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250386",
+              "highs": 14800,
+              "low": 10200,
+              "average": 12500,
+              "vchange": null,
+              "vchange_rate": null,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250215",
+              "highs": 17400,
+              "low": 17300,
+              "average": 17350,
+              "vchange": -50,
+              "vchange_rate": -0.0028735632183908046,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250455",
+              "highs": 18700,
+              "low": 18400,
+              "average": 18550,
+              "vchange": null,
+              "vchange_rate": null,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250605",
+              "highs": 79000,
+              "low": 75000,
+              "average": 77000,
+              "vchange": null,
+              "vchange_rate": null,
+              "renew_date": "2026-05-19"
+            },
+            {
+              "product_id": "201102250043",
+              "highs": 110000,
+              "low": 109500,
+              "average": 109750,
+              "vchange": -220,
+              "vchange_rate": -0.002000545603346367,
+              "renew_date": "2026-05-19"
+            }
+          ]
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "adca6a6a-4396-44da-8b96-777dc9379bb7",
+  "activeVersionId": "be239ae8-f22b-45d0-83d1-3e031007114f",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-19T03:09:58.643Z",
+      "createdAt": "2026-05-19T03:09:58.643Z",
+      "role": "workflow:owner",
+      "workflowId": "Kh3KuEvxTRmkUF5u",
+      "projectId": "mAGMOyMmFHehjPGm"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-19T06:27:55.000Z",
+    "createdAt": "2026-05-19T03:27:02.961Z",
+    "versionId": "be239ae8-f22b-45d0-83d1-3e031007114f",
+    "workflowId": "Kh3KuEvxTRmkUF5u",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 18
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1840,
+          784
+        ],
+        "id": "d49f6502-03e2-4492-b5ae-4c4504aa3fa9",
+        "name": "触发器"
+      },
+      {
+        "parameters": {
+          "url": "={{ $json.urls }}",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "user-agent",
+                "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          -480,
+          1056
+        ],
+        "id": "7ba2e3a9-68b1-4292-9519-6c3c561c6bcb",
+        "name": "获取数据"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dd68c0bf-6802-462e-a861-0963ce5f14cc",
+                "name": "product_id",
+                "value": "={{ $json.data.product_id }}",
+                "type": "string"
+              },
+              {
+                "id": "620e8ce2-9b43-4812-b9bf-3f4330c5c1a2",
+                "name": "highs",
+                "value": "={{ $json.data.highs }}",
+                "type": "number"
+              },
+              {
+                "id": "d5e03c25-902a-40e5-ab98-c108515dbbe8",
+                "name": "low",
+                "value": "={{ $json.data.low }}",
+                "type": "number"
+              },
+              {
+                "id": "92784ca1-1c50-4add-a089-15d9d2154818",
+                "name": "average",
+                "value": "={{ $json.data.average }}",
+                "type": "number"
+              },
+              {
+                "id": "366012fb-edea-492c-9bbf-22c1e85ea70d",
+                "name": "vchange",
+                "value": "={{ $json.data.vchange }}",
+                "type": "number"
+              },
+              {
+                "id": "dfef8d21-83e8-480e-a55a-90c4db307e62",
+                "name": "renew_date",
+                "value": "={{ $json.data.renew_date }}",
+                "type": "string"
+              },
+              {
+                "id": "b8bfa5d3-4230-4f09-887e-ede541fb1451",
+                "name": "vchange_rate",
+                "value": "={{ $json.data.vchange_rate }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -480,
+          576
+        ],
+        "id": "29bd7319-ed28-4e3f-94ae-e817e8707580",
+        "name": "格式化数据匹配数据库"
+      },
+      {
+        "parameters": {
+          "batchSize": "=1",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          -736,
+          768
+        ],
+        "id": "6a4f7c73-66aa-46e3-87fc-7acc6ece7b5f",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "1e82dd11-219d-417a-a100-e5fdcdb49382",
+                "name": "urls",
+                "value": "=[\n\"https://cj.smm.cn/ajax/spot/history/201102250293/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250398/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250290/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250428/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250307/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250115/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250008/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/202201040001/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250459/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250109/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250166/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250130/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250502/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250574/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250385/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250391/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250404/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250146/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250386/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250215/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250455/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250605/{{ $json.date }}/{{ $json.date }}\",\n\"https://cj.smm.cn/ajax/spot/history/201102250043/{{ $json.date }}/{{ $json.date }}\"\n] ",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1168,
+          768
+        ],
+        "id": "7f345557-540f-41c8-8388-be3e1d2c0d0a",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "fieldToSplitOut": "urls",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.splitOut",
+        "typeVersion": 1,
+        "position": [
+          -960,
+          768
+        ],
+        "id": "2c95afa3-11c8-428d-a530-769dce3dc162",
+        "name": "Split Out"
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\n\nif (items.length === 0) {\n  return [];\n}\n\n// 获取最后一个元素\nconst lastItem = $input.first().json.data[29];\n\n// 创建只包含myNewField的数组\nconst result = [];\n\nfor (const item of items) {\n  result.push({\n    data: lastItem  // 或者 lastItem.data，根据你的需求\n  });\n}\n\nreturn result;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -176,
+          1056
+        ],
+        "id": "02e2037b-b584-491c-94b8-aa3f5945cd3f",
+        "name": "Code in JavaScript"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "dc6e0398-9edd-4db5-9411-b9b7481c116a",
+                "name": "data",
+                "value": "={{ $json.data }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -320,
+          1056
+        ],
+        "id": "5efb6738-4df4-43a0-994f-a6a5c778434e",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "schema": {
+            "__rl": true,
+            "mode": "list",
+            "value": "public"
+          },
+          "table": {
+            "__rl": true,
+            "value": "cjsmm",
+            "mode": "list",
+            "cachedResultName": "cjsmm"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "product_id",
+                "displayName": "product_id",
+                "required": true,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "highs",
+                "displayName": "highs",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "low",
+                "displayName": "low",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "average",
+                "displayName": "average",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "vchange",
+                "displayName": "vchange",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "renew_date",
+                "displayName": "renew_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "dateTime",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "vchange_rate",
+                "displayName": "vchange_rate",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.postgres",
+        "typeVersion": 2.6,
+        "position": [
+          -288,
+          704
+        ],
+        "id": "f81b0edb-3253-43f3-9906-7d4174dd3b18",
+        "name": "supabase",
+        "credentials": {
+          "postgres": {
+            "id": "nyuMK7Uc6frm8dfK",
+            "name": "Postgres account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "table": {
+            "__rl": true,
+            "value": "cjsmmcn",
+            "mode": "list",
+            "cachedResultName": "cjsmmcn"
+          },
+          "columnToMatchOn": "product_id",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.5,
+        "position": [
+          -272,
+          144
+        ],
+        "id": "35a98369-b183-4503-b55b-cbe30f6e2467",
+        "name": "aiven",
+        "credentials": {
+          "mySql": {
+            "id": "yCZ3mplRDi4CQkwj",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "webhookUrl": "https://www.kdocs.cn/api/v3/ide/file/475253428153/script/V2-5xxwYuhzUByVy5ax1HAtaP/sync_task",
+          "contextParameters": {
+            "sheetName": "长江有色网数据"
+          },
+          "argv": "={\n  \"targetSheetName\": \"长江有色网数据\",\n  \"product_id\": \"{{ $json.product_id }}\",\n  \"highs\": \"{{ $json.highs }}\",\n  \"low\": \"{{ $json.low }}\",\n  \"average\": \"{{ $json.average }}\",\n  \"vchange\": \"{{ $json.vchange }}\",\n  \"renew_date\": \"{{ $json.renew_date }}\",\n  \"vchange_rate\": \"{{ $json.vchange_rate }}\"\n}  ",
+          "options": {}
+        },
+        "type": "n8n-nodes-kingsoft-airscript.kingsoftAirscript",
+        "typeVersion": 3,
+        "position": [
+          -160,
+          384
+        ],
+        "id": "c7f009d0-b891-4f04-af23-1bf227943dce",
+        "name": "wps",
+        "credentials": {
+          "kingsoftAirscriptApi": {
+            "id": "PQu1Zm20jaJnjx3s",
+            "name": "金山 AirScript account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw",
+            "mode": "list",
+            "cachedResultName": "有色金属价格数据",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "长江有色网",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1sc0VLjnuPXnQ1ALvVU6sw_r8g20W4SZkkfgbhPM_PHw/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "product_id": "={{ $json.product_id }}",
+              "highs": "={{ $json.highs }}",
+              "low": "={{ $json.low }}",
+              "average": "={{ $json.average }}",
+              "vchange": "={{ $json.vchange }}",
+              "renew_date": "={{ $json.renew_date }}",
+              "vchange_rate": "={{ $json.vchange_rate }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "product_id",
+                "displayName": "product_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "highs",
+                "displayName": "highs",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "low",
+                "displayName": "low",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "average",
+                "displayName": "average",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "vchange",
+                "displayName": "vchange",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "renew_date",
+                "displayName": "renew_date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "vchange_rate",
+                "displayName": "vchange_rate",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          -272,
+          -32
+        ],
+        "id": "96d8863d-81fc-4628-aac2-c5496409c83d",
+        "name": "google",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "Ql6GpFz3iUDqYrbV",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "18c4ab98-1df6-47a5-9ac1-0f8cf8aca537",
+                "leftValue": "={{ $json.weekday }}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          -1376,
+          784
+        ],
+        "id": "2fdf1ab0-9565-4dd0-96cd-45be065c9916",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "jsCode": "// 获取当前时间并转换为特定时区\nconst now = new Date();\n\n// 设置时区偏移（例如：东八区 UTC+8）\nconst timezoneOffset = 8; // 小时\nconst utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);\nconst localTime = new Date(utcTime + (3600000 * timezoneOffset));\n\n// 格式化日期为 yyyy-mm-dd\nconst year = localTime.getFullYear();\nconst month = String(localTime.getMonth() + 1).padStart(2, '0');\nconst day = String(localTime.getDate()).padStart(2, '0');\nconst formattedDate = `${year}-${month}-${day}`;\n\n// 获取星期数\nconst dayOfWeek = localTime.getDay();\nconst isWeekday = dayOfWeek >= 1 && dayOfWeek <= 5;\n\nconst result = {\n  date: formattedDate,\n  weekday: isWeekday,\n  timezone: `UTC+${timezoneOffset}`,\n  dayOfWeek: dayOfWeek\n};\n\nreturn [{\n  json: result\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1600,
+          784
+        ],
+        "id": "a66d8f56-2d84-4ff4-91bc-f2cd9e1deade",
+        "name": "Code in JavaScript1"
+      }
+    ],
+    "connections": {
+      "触发器": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "获取数据": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "格式化数据匹配数据库": {
+        "main": [
+          [
+            {
+              "node": "supabase",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "wps",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "aiven",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "google",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "格式化数据匹配数据库",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "获取数据",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "Split Out",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Split Out": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "rich fan",
+    "name": "Version be239ae8",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
